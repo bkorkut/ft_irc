@@ -1,4 +1,5 @@
 #include <sstream>
+#include <vector>
 #include "Server.hpp"
 
 void	Server::NICK(std::string params)
@@ -25,12 +26,31 @@ void	Server::KICK(std::string params)
 	std::cout << params << std::endl;
 }
 
+// Direct Client-to-Client (DDC) file transfer comes here too
+void	Server::PRIVMSG(std::string params)
+{
+	std::istringstream	stream(params);
+	std::string					message;
+	std::string					targets;
+	std::vector<std::string>	target;
+
+	stream >> targets;
+	std::getline(stream >> std::ws, message);
+	if (!message.empty() && message[0] == ':')
+		message.erase(0, 1);
+	for (std::string st; std::getline(stream, st, ','); st;) // man i need foreach or sumthin
+		target.push_back(st);
+	std::cout << "in function privmsg" << std::endl;
+	std::cout << params << std::endl;
+}
+
 Server::Server()
 {
 	fptr["NICK"] = &Server::NICK;
 	fptr["USER"] = &Server::USER;
 	fptr["PASS"] = &Server::PASS;
 	fptr["KICK"] = &Server::KICK;
+	fptr["PRIVMSG"] = &Server::PRIVMSG;
 }
 
 void	Server::commandParser(std::string input)
