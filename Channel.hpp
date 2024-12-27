@@ -25,12 +25,12 @@ enum ChannelFlags : char
 
 class	Channel
 {
-	std::string	name; // needs to be limited to 50 chars
-					// and needs prefixes
-	// properties
-	bool	priv;
-	// members
-	std::map<std::string, Metadata> users;
+	// std::string	name; // needs to be limited to 50 chars
+	// 				// and needs prefixes
+	// // properties
+	// bool	priv;
+	// // members
+	// std::map<std::string, Metadata> users;
 };
 
 #endif

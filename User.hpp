@@ -5,16 +5,16 @@
 
 class	User
 {
-	int			id;
-	std::string	username;
+	// int			id;
+	// std::string	username;
 };
 
 class	Metadata
 {
-	User	*User;
-	bool	voice;
-	bool	chCreator;
-	bool	chOperator;
+	// User	*User;
+	// bool	voice;
+	// bool	chCreator;
+	// bool	chOperator;
 };
 
 #endif

@@ -7,10 +7,16 @@
 
 class Server
 {
+		void	NICK(std::string params);
+		void	USER(std::string params);
+		void	PASS(std::string params);
+		void	KICK(std::string params);
+	private:
 		std::map<std::string, void (Server::*)(std::string parameters)> fptr;
-		void	commadParser(std::string	input);
-	public:
 		std::map<std::string, Channel>	channels;
+	public:
+				Server();
+		void	commandParser(std::string	input);
 };
 
 #endif
