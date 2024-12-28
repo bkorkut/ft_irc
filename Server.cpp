@@ -38,10 +38,18 @@ void	Server::PRIVMSG(std::string params)
 	std::getline(stream >> std::ws, message);
 	if (!message.empty() && message[0] == ':')
 		message.erase(0, 1);
-	for (std::string st; std::getline(stream, st, ','); st;) // man i need foreach or sumthin
-		target.push_back(st);
+	stream.clear();
+	stream.str(targets);
+	while (stream.good())
+	{
+		std::getline(stream, targets, ',');
+		target.push_back(targets);
+	}
 	std::cout << "in function privmsg" << std::endl;
-	std::cout << params << std::endl;
+	for(size_t i = 0; i < target.size(); i++)
+		std::cout << target[i] << std::endl;
+	// find and send message to clients here
+	std::cout << message << std::endl;
 }
 
 Server::Server()
