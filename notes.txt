@@ -30,3 +30,6 @@ there are channel properties, defined by channel modes
 channel creators are automatically channel operators, they can toggle what other cops can do
 
 servers must forbid nickname anonymous, beceause of channel flag 'a' (anonymous channel)
+
+
+need to add minimum number of params to functions for ERR_NEEDMOREPARAMS

@@ -16,31 +16,39 @@ void	Server::NICK(std::vector<std::string> params)
 	// if not, set or change the prev one
 	// if so, issue an ERR_NICKNAMEINUSE numeric and ignore nick
 	std::cout << "in function nick" << std::endl;
-	std::cout << params[0] << std::endl;
+	for (size_t i = 0; i < params.size(); i++)
+		std::cout << params[i] << " end" << std::endl;
 }
 
 void	Server::USER(std::vector<std::string> params)
 {
 	std::cout << "in function user" << std::endl;
-	std::cout << params[0] << std::endl;
+	for (size_t i = 0; i < params.size(); i++)
+		std::cout << params[i] << " end" << std::endl;
 }
 
 void	Server::PASS(std::vector<std::string> params)
 {
 	std::cout << "in function pass" << std::endl;
-	std::cout << params[0] << std::endl;
+	for (size_t i = 0; i < params.size(); i++)
+		std::cout << params[i] << " end" << std::endl;
 }
 
 void	Server::KICK(std::vector<std::string> params)
 {
 	std::cout << "in function kick" << std::endl;
-	std::cout << params[0] << std::endl;
+	for (size_t i = 0; i < params.size(); i++)
+		std::cout << params[i] << " end" << std::endl;
 }
 
 // Direct Client-to-Client (DDC) file transfer comes here too
 void	Server::PRIVMSG(std::vector<std::string> params)
 {
-	// NEEDS CHANGE AFTER VECTRO SPLIT
+	// NEEDS CHANGE AFTER VECTOR SPLIT
+	// if (params.size() > 3)
+	// 	;
+	for (size_t i = 0; i < params.size(); i++)
+		std::cout << params[i] << " end" << std::endl;
 	// std::istringstream	stream(params);
 	// std::string					message;
 	// std::string					targets;
@@ -85,10 +93,10 @@ std::vector<std::string>	vecSplit(std::string toSplit, std::string septor)
 	{
 		foundPos = toSplit.find(septor, pos);
 		if (foundPos != std::string::npos)
-			retval.push_back(toSplit.substr(pos, foundPos));
+			retval.push_back(toSplit.substr(pos, foundPos - pos));
 		else
 			retval.push_back(toSplit.substr(pos, toSplit.size()));
-		pos = foundPos;
+		pos = foundPos + septor.size();
 	} while (foundPos != std::string::npos);
 	return (retval);
 }
@@ -100,11 +108,12 @@ void	Server::commandParser(std::string input)
 	std::string	colon;
 	std::string	others;
 
+	std::cout << input << std::endl;
 	size_t i = input.find(" :");
 	if (i != std::string::npos)
 	{
 		others = input.substr(0, i);
-		colon = input.substr(i, input.size());
+		colon = input.substr(i + 2, input.size());
 		params = vecSplit(others, " ");
 		params.push_back(colon);
 	}
@@ -118,7 +127,3 @@ void	Server::commandParser(std::string input)
 // PRIVMSG burak hey :burak naber\r\n/PRIVMSG burak hey :burak naber\r\n
 // CAP LS\r\nPASS 123\r\nNICK burak\r\nUSER a a a a
 // PRIVMSG burak hey :burak naber\r\n
-// PRIVMSG " :"
-
-// KOMUT burak hey :burak naber
-// KOMUT burak :hey burak

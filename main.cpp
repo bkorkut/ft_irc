@@ -3,13 +3,11 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <iostream>
-
 #include "Server.hpp"
 
 int main(int ac, char **av)
 {
 	Server a;
-	std::cout << "hey" << std::endl;
 	// std::cout << std::boolalpha << a.channels.empty() << std::endl;
 	if (ac == 2)
 		a.commandParser(av[1]);
