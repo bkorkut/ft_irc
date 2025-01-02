@@ -26,6 +26,8 @@
 
 # define RPL_AWAY 301
 
+# define NICKSET "abcdefghiklmnoprstuvwxyz1234567890[]{}|\\"
+
 // # define ERR_TOOMANYCHANNELS 405
 // # define ERR_WASNOSUCHNICK 406
 // # define ERR_NOORIGIN 409
