@@ -32,6 +32,8 @@ class	Channel
 	// // members
 	// std::map<std::string, Metadata> users;
 	//ahmet
+	//deneme
+	//asdahmet
 };
 
 #endif
