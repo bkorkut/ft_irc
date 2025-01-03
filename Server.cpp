@@ -6,7 +6,11 @@
 void	Server::NICK(std::vector<std::string> params)
 {
 	// check if nickname is valid
-	// is alphanumeric, square and curly brackets ([]{}), backslashes (\), and pipe (|) characters in nicknames, and MAY disallow digits as the first character. Servers MAY allow extra characters, as long as they do not introduce ambiguity in other commands, including:
+	// is alphanumeric,
+	// square and curly brackets ([]{}),
+	// backslashes (\), and pipe (|) characters in nicknames,
+	// and MAY disallow digits as the first character.
+	// Servers MAY allow extra characters, as long as they do not introduce ambiguity in other commands, including:
 
 	// no leading # character or other character advertized in CHANTYPES
 	// no leading colon (:)
@@ -105,8 +109,8 @@ std::vector<std::string>	vecSplit(std::string toSplit, std::string septor)
 void	Server::commandParser(std::string input)
 {
 	std::vector<std::string>	params;
-	std::string	colon;
-	std::string	others;
+	std::string					colon;
+	std::string					others;
 
 	std::cout << input << std::endl;
 	size_t i = input.find(" :");
@@ -120,8 +124,15 @@ void	Server::commandParser(std::string input)
 	else
 		params = vecSplit(input, " ");
 
-	if (!params.empty() && fptr.find(params[0]) != fptr.end())
+	try
+	{
+		if (!params.empty() && fptr.find(params[0]) != fptr.end())
 			(this->*fptr[params[0]])(params);
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
 }
 
 // PRIVMSG burak hey :burak naber\r\n/PRIVMSG burak hey :burak naber\r\n
