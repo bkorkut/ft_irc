@@ -59,7 +59,7 @@ class Server
 		void	PRIVMSG(std::vector<std::string> params);
 		std::map<std::string, void (Server::*)(std::vector<std::string> parameters)> fptr;
 		std::map<std::string, Channel>	channels;
-		std::map<std::string, User>	users;
+		std::map<unsigned int, User>	users;
 	public:
 				Server();
 		void	commandParser(std::string input);

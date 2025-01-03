@@ -6,7 +6,7 @@
 class	User
 {
 	private:
-	//	int			id;
+	// int			id;
 	//	std::string	nick;
 };
 

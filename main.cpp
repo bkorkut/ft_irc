@@ -1,17 +1,22 @@
 #include <netinet/in.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <unistd.h>
+#include <poll.h>
 #include <iostream>
+#include <unistd.h>
 #include "Server.hpp"
+#include <stdio.h>
+#include <iostream>     // for std::cout
+#include <cstdlib>     // for exit
+#include <cstring>     // for memset if needed
 
-int main(int ac, char **av)
-{
-	Server a;
-	// std::cout << std::boolalpha << a.channels.empty() << std::endl;
-	if (ac == 2)
-		a.commandParser(av[1]);
-}
+// int main(int ac, char **av)
+// {
+// 	Server a;
+// 	// std::cout << std::boolalpha << a.channels.empty() << std::endl;
+// 	if (ac == 2)
+// 		a.commandParser(av[1]);
+// }
 
 // close, accept, listen, bind, htons,
 
@@ -25,46 +30,75 @@ int	main(/*int ac, char **av*/)
 {
 	// if (ac == 3)
 	// {
-		int	sd;
 
-		sd = socket(AF_INET, SOCK_STREAM, 0);
+		int	sd = socket(AF_INET, SOCK_STREAM, 0);
 		if (sd == -1)
-		{
-			perror("Socket creation failed");
-			exit(EXIT_FAILURE);
-		}
+			return perror("Socket creation failed"), std::exit(EXIT_FAILURE), 1;
 
 		sockaddr_in	sa;
 		sa.sin_family = AF_INET;
-		sa.sin_port = htons(4242);
+		sa.sin_port = htons(4243);
 		sa.sin_addr.s_addr = INADDR_ANY;
 
 		if (bind(sd, (struct sockaddr *)(&sa), sizeof(sa)))
-		{
-			perror("Assigning a name to socket failed");
-			exit(EXIT_FAILURE);
-		}
-
+			return perror("Assigning a name to socket failed"), std::exit(EXIT_FAILURE), 1;
 		if (listen(sd, 2))
-		{
-			perror("Failed to listen");
-			exit(EXIT_FAILURE);
-		}
+			return perror("Failed to listen"), std::exit(EXIT_FAILURE), 1;
 
-		socklen_t	sa_len = sizeof(sa);
-		char	buf[512];
+		int				ready;
+		int				num_fds = 1;
+		socklen_t		sa_len = sizeof(sa);
+		char			buf[512];
+		struct pollfd	fds[100];
+
+		fds[0].fd = sd;
+		fds[0].events = POLLIN;
 		while (1)
 		{
-			if (accept(sd, (struct sockaddr *)(&sa), &sa_len))
+			ready = poll(fds, num_fds, -1);
+			if (ready == -1)
+				return std::cout << "terminating program" << std::endl, 1;
+			for(int i = 0; i < num_fds; i++)
 			{
-				perror("Failed to accept request");
-				exit(EXIT_FAILURE);
+				int	k = 0;
+				if (fds[i].revents & POLLIN)
+				{
+					std::cout << "poolın" << std::endl;
+						if (i == 0)
+						{
+							int	fd = accept(sd, (struct sockaddr *)(&sa), &sa_len);
+							if (fd == -1)
+								return perror("Failed to accept request"), std::exit(EXIT_FAILURE), 1;
+							else
+							{
+								fds[num_fds].fd = fd;
+								fds[num_fds].events = POLLIN;
+								num_fds++;
+							}
+						}
+						else
+						{
+							ssize_t bytes = recv(fds[i].fd, buf, sizeof(buf) - 1, 0);
+							if (bytes > 0)
+							{
+								buf[bytes] = '\0';
+								std::cout << buf << std::endl;
+							}
+						}
+						k++;
+				}
+				else if (fds[i].revents & POLLHUP)
+				{
+						std::cout << "asdasd" << std::endl;
+						fds[i].fd = -1;
+						k++;
+						exit(1);
+				}
+				if (k == ready)
+					break ;
 			}
-
-			if (recv(sd, buf, 512, 0))
-				perror("Failed to recieve message");
-		}
-		close(sd);
+	}
+	close(sd);
 	// }
 	return 0;
 }
