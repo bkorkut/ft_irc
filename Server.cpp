@@ -3,6 +3,7 @@
 #include <list>
 #include "Server.hpp"
 
+// Parameters: <subcommand> [:<capabilities>]
 void	Server::CAP(int fd, std::vector<std::string> params)
 {
 	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
@@ -10,20 +11,15 @@ void	Server::CAP(int fd, std::vector<std::string> params)
 		std::cout << params[i] << std::endl;
 }
 
+// Parameters: <nickname>
 void	Server::NICK(int fd, std::vector<std::string> params)
 {
-	// check if nickname is valid
-	// is alphanumeric,
-	// square and curly brackets ([]{}),
-	// backslashes (\), and pipe (|) characters in nicknames,
-	// and MAY disallow digits as the first character.
-	// Servers MAY allow extra characters, as long as they do not introduce ambiguity in other commands, including:
+	if (params.size() < 2)
+		return ; // ERR_NONICKNAMEGIVEN
+	if (params[1].find_first_not_of(NICKSET) != std::string::npos)
+		return ; // ERR_ERRONEOUSNICKNAME
 
-	// no leading # character or other character advertized in CHANTYPES
-	// no leading colon (:)
-	// no ASCII space
-
-	// check if nickname is already in use in a user
+	// check if nickname is already in use in a user (NICKNAMEINUSE OR NICKCOLLISION)
 	// if not, set or change the prev one
 	// if so, issue an ERR_NICKNAMEINUSE numeric and ignore nick
 	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
@@ -31,6 +27,7 @@ void	Server::NICK(int fd, std::vector<std::string> params)
 		std::cout << params[i] << std::endl;
 }
 
+// Parameters: <username> 0 * <realname>
 void	Server::USER(int fd, std::vector<std::string> params)
 {
 	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
@@ -38,6 +35,7 @@ void	Server::USER(int fd, std::vector<std::string> params)
 		std::cout << params[i] << std::endl;
 }
 
+// Parameters: <password>
 void	Server::PASS(int fd, std::vector<std::string> params)
 {
 	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
@@ -45,6 +43,7 @@ void	Server::PASS(int fd, std::vector<std::string> params)
 		std::cout << params[i] << std::endl;
 }
 
+// Parameters: <channel> <user> *( "," <user> ) [<comment>]
 void	Server::KICK(int fd, std::vector<std::string> params)
 {
 	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
@@ -52,6 +51,7 @@ void	Server::KICK(int fd, std::vector<std::string> params)
 		std::cout << params[i] << std::endl;
 }
 
+// Parameters: <target> [<modestring> [<mode arguments>...]]
 void	Server::MODE(int fd, std::vector<std::string> params)
 {
 	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
@@ -59,6 +59,7 @@ void	Server::MODE(int fd, std::vector<std::string> params)
 		std::cout << params[i] << std::endl;
 }
 
+// Parameters: <channel> [<topic>]
 void	Server::TOPIC(int fd, std::vector<std::string> params)
 {
 	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
@@ -66,6 +67,7 @@ void	Server::TOPIC(int fd, std::vector<std::string> params)
 		std::cout << params[i] << std::endl;
 }
 
+// Parameters: <nickname> <channel>
 void	Server::INVITE(int fd, std::vector<std::string> params)
 {
 	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
@@ -74,6 +76,7 @@ void	Server::INVITE(int fd, std::vector<std::string> params)
 }
 
 // Direct Client-to-Client (DDC) file transfer comes here too
+// Parameters: <target>{,<target>} <text to be sent>
 void	Server::PRIVMSG(int fd, std::vector<std::string> params)
 {
 	// NEEDS CHANGE AFTER VECTOR SPLIT

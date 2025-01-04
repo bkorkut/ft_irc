@@ -22,14 +22,8 @@ shall have no space, ctrlG or comma
 
 & channels are local
 channel masks toggle which servers see the channel
-
 there are channel properties, defined by channel modes
-
 + channels don't support channel modes
-
 channel creators are automatically channel operators, they can toggle what other cops can do
 
 servers must forbid nickname anonymous, beceause of channel flag 'a' (anonymous channel)
-
-
-need to add minimum number of params to functions for ERR_NEEDMOREPARAMS
