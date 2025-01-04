@@ -1,7 +1,7 @@
 #ifndef CHANNEL_HPP
 # define CHANNEL_HPP
 
-enum ChannelFlags : char
+enum ChannelFlags
 {
 	CREATOR = 'O',
 	OPERATOR = 'o',
@@ -31,7 +31,6 @@ class	Channel
 	// bool	priv;
 	// // members
 	// std::map<std::string, Metadata> users;
-	//ahmet
 };
 
 #endif

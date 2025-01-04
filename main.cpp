@@ -38,6 +38,7 @@ int	main(/*int ac, char **av*/)
 		sockaddr_in	sa;
 		sa.sin_family = AF_INET;
 		sa.sin_port = htons(6697);
+		sa.sin_port = htons(6697);
 		sa.sin_addr.s_addr = INADDR_ANY;
 
 		if (bind(sd, (struct sockaddr *)(&sa), sizeof(sa)))
