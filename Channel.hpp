@@ -1,7 +1,7 @@
 #ifndef CHANNEL_HPP
 # define CHANNEL_HPP
 
-enum ChannelFlags : char
+enum ChannelFlags
 {
 	CREATOR = 'O',
 	OPERATOR = 'o',

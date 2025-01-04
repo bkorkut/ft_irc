@@ -37,7 +37,7 @@ int	main(/*int ac, char **av*/)
 
 		sockaddr_in	sa;
 		sa.sin_family = AF_INET;
-		sa.sin_port = htons(4243);
+		sa.sin_port = htons(6697);
 		sa.sin_addr.s_addr = INADDR_ANY;
 
 		if (bind(sd, (struct sockaddr *)(&sa), sizeof(sa)))
@@ -63,7 +63,7 @@ int	main(/*int ac, char **av*/)
 				int	k = 0;
 				if (fds[i].revents & POLLIN)
 				{
-					std::cout << "poolın" << std::endl;
+					std::cout << "pollin" << std::endl;
 						if (i == 0)
 						{
 							int	fd = accept(sd, (struct sockaddr *)(&sa), &sa_len);
@@ -89,7 +89,7 @@ int	main(/*int ac, char **av*/)
 				}
 				else if (fds[i].revents & POLLHUP)
 				{
-						std::cout << "asdasd" << std::endl;
+						std::cout << "pollup" << std::endl;
 						fds[i].fd = -1;
 						k++;
 						exit(1);
