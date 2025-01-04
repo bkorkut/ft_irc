@@ -3,6 +3,13 @@
 #include <list>
 #include "Server.hpp"
 
+void	Server::CAP(std::vector<std::string> params)
+{
+	std::cout << "Command:" << std::endl;
+	for (size_t i = 0; i < params.size(); i++)
+		std::cout << params[i] << std::endl;
+}
+
 void	Server::NICK(std::vector<std::string> params)
 {
 	// check if nickname is valid
@@ -45,6 +52,27 @@ void	Server::KICK(std::vector<std::string> params)
 		std::cout << params[i] << std::endl;
 }
 
+void	Server::MODE(std::vector<std::string> params)
+{
+	std::cout << "Command:" << std::endl;
+	for (size_t i = 0; i < params.size(); i++)
+		std::cout << params[i] << std::endl;
+}
+
+void	Server::TOPIC(std::vector<std::string> params)
+{
+	std::cout << "Command:" << std::endl;
+	for (size_t i = 0; i < params.size(); i++)
+		std::cout << params[i] << std::endl;
+}
+
+void	Server::INVITE(std::vector<std::string> params)
+{
+	std::cout << "Command:" << std::endl;
+	for (size_t i = 0; i < params.size(); i++)
+		std::cout << params[i] << std::endl;
+}
+
 // Direct Client-to-Client (DDC) file transfer comes here too
 void	Server::PRIVMSG(std::vector<std::string> params)
 {
@@ -80,10 +108,14 @@ void	Server::PRIVMSG(std::vector<std::string> params)
 
 Server::Server()
 {
+	fptr["CAP"] = &Server::CAP;
 	fptr["NICK"] = &Server::NICK;
 	fptr["USER"] = &Server::USER;
 	fptr["PASS"] = &Server::PASS;
 	fptr["KICK"] = &Server::KICK;
+	fptr["MODE"] = &Server::MODE;
+	fptr["TOPIC"] = &Server::TOPIC;
+	fptr["INVITE"] = &Server::INVITE;
 	fptr["PRIVMSG"] = &Server::PRIVMSG;
 }
 

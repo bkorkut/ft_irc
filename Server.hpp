@@ -53,10 +53,14 @@
 class Server
 {
 	private:
+		void	CAP(std::vector<std::string> params);
 		void	NICK(std::vector<std::string> params);
 		void	USER(std::vector<std::string> params);
 		void	PASS(std::vector<std::string> params);
 		void	KICK(std::vector<std::string> params);
+		void	MODE(std::vector<std::string> params);
+		void	TOPIC(std::vector<std::string> params);
+		void	INVITE(std::vector<std::string> params);
 		void	PRIVMSG(std::vector<std::string> params);
 		std::map<std::string, void (Server::*)(std::vector<std::string> parameters)> fptr;
 		std::map<std::string, Channel>	channels;
