@@ -53,21 +53,21 @@
 class Server
 {
 	private:
-		void	CAP(std::vector<std::string> params);
-		void	NICK(std::vector<std::string> params);
-		void	USER(std::vector<std::string> params);
-		void	PASS(std::vector<std::string> params);
-		void	KICK(std::vector<std::string> params);
-		void	MODE(std::vector<std::string> params);
-		void	TOPIC(std::vector<std::string> params);
-		void	INVITE(std::vector<std::string> params);
-		void	PRIVMSG(std::vector<std::string> params);
-		std::map<std::string, void (Server::*)(std::vector<std::string> parameters)> fptr;
+		void	CAP(int fd, std::vector<std::string> params);
+		void	NICK(int fd, std::vector<std::string> params);
+		void	USER(int fd, std::vector<std::string> params);
+		void	PASS(int fd, std::vector<std::string> params);
+		void	KICK(int fd, std::vector<std::string> params);
+		void	MODE(int fd, std::vector<std::string> params);
+		void	TOPIC(int fd, std::vector<std::string> params);
+		void	INVITE(int fd, std::vector<std::string> params);
+		void	PRIVMSG(int fd, std::vector<std::string> params);
+		std::map<std::string, void (Server::*)(int fd, std::vector<std::string> parameters)> fptr;
 		std::map<std::string, Channel>	channels;
-		std::map<unsigned int, User>	users;
 	public:
 				Server();
-		void	commandParser(std::string input);
+		std::map<int, User>	users;
+		void	commandParser(int fd, std::string input);
 };
 
 #endif

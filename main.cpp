@@ -75,6 +75,7 @@ int	main(/*int ac, char **av*/)
 							fds[num_fds].fd = fd;
 							fds[num_fds].events = POLLIN;
 							num_fds++;
+							server.users.insert(std::make_pair(fd, User(fd)));
 						}
 					}
 					else
@@ -83,7 +84,7 @@ int	main(/*int ac, char **av*/)
 						if (bytes > 0)
 						{
 							buf[bytes] = '\0';
-							server.commandParser(buf);
+							server.commandParser(fds[i].fd, buf);
 						}
 					}
 					k++;

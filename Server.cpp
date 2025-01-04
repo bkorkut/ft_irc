@@ -3,14 +3,14 @@
 #include <list>
 #include "Server.hpp"
 
-void	Server::CAP(std::vector<std::string> params)
+void	Server::CAP(int fd, std::vector<std::string> params)
 {
-	std::cout << "Command:" << std::endl;
+	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
 	for (size_t i = 0; i < params.size(); i++)
 		std::cout << params[i] << std::endl;
 }
 
-void	Server::NICK(std::vector<std::string> params)
+void	Server::NICK(int fd, std::vector<std::string> params)
 {
 	// check if nickname is valid
 	// is alphanumeric,
@@ -26,60 +26,60 @@ void	Server::NICK(std::vector<std::string> params)
 	// check if nickname is already in use in a user
 	// if not, set or change the prev one
 	// if so, issue an ERR_NICKNAMEINUSE numeric and ignore nick
-	std::cout << "Command:" << std::endl;
+	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
 	for (size_t i = 0; i < params.size(); i++)
 		std::cout << params[i] << std::endl;
 }
 
-void	Server::USER(std::vector<std::string> params)
+void	Server::USER(int fd, std::vector<std::string> params)
 {
-	std::cout << "Command:" << std::endl;
+	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
 	for (size_t i = 0; i < params.size(); i++)
 		std::cout << params[i] << std::endl;
 }
 
-void	Server::PASS(std::vector<std::string> params)
+void	Server::PASS(int fd, std::vector<std::string> params)
 {
-	std::cout << "Command:" << std::endl;
+	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
 	for (size_t i = 0; i < params.size(); i++)
 		std::cout << params[i] << std::endl;
 }
 
-void	Server::KICK(std::vector<std::string> params)
+void	Server::KICK(int fd, std::vector<std::string> params)
 {
-	std::cout << "Command:" << std::endl;
+	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
 	for (size_t i = 0; i < params.size(); i++)
 		std::cout << params[i] << std::endl;
 }
 
-void	Server::MODE(std::vector<std::string> params)
+void	Server::MODE(int fd, std::vector<std::string> params)
 {
-	std::cout << "Command:" << std::endl;
+	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
 	for (size_t i = 0; i < params.size(); i++)
 		std::cout << params[i] << std::endl;
 }
 
-void	Server::TOPIC(std::vector<std::string> params)
+void	Server::TOPIC(int fd, std::vector<std::string> params)
 {
-	std::cout << "Command:" << std::endl;
+	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
 	for (size_t i = 0; i < params.size(); i++)
 		std::cout << params[i] << std::endl;
 }
 
-void	Server::INVITE(std::vector<std::string> params)
+void	Server::INVITE(int fd, std::vector<std::string> params)
 {
-	std::cout << "Command:" << std::endl;
+	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
 	for (size_t i = 0; i < params.size(); i++)
 		std::cout << params[i] << std::endl;
 }
 
 // Direct Client-to-Client (DDC) file transfer comes here too
-void	Server::PRIVMSG(std::vector<std::string> params)
+void	Server::PRIVMSG(int fd, std::vector<std::string> params)
 {
 	// NEEDS CHANGE AFTER VECTOR SPLIT
 	// if (params.size() > 3)
 	// 	;
-	std::cout << "Command:" << std::endl;
+	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
 	for (size_t i = 0; i < params.size(); i++)
 		std::cout << params[i] << std::endl;
 	// std::istringstream	stream(params);
@@ -139,7 +139,7 @@ std::vector<std::string>	vecSplit(std::string toSplit, std::string septor)
 }
 
 // parses single perfect commands for now. splits em into parameters in a vector
-void	Server::commandParser(std::string input)
+void	Server::commandParser(int fd, std::string input)
 {
 	std::vector<std::string>	commands;
 	std::vector<std::string>	params;
@@ -164,7 +164,7 @@ void	Server::commandParser(std::string input)
 		// try
 		// {
 		if (!params.empty() && fptr.find(params[0]) != fptr.end())
-				(this->*fptr[params[0]])(params);
+				(this->*fptr[params[0]])(fd, params);
 		// }
 		// catch(const std::exception& e)
 		// {
