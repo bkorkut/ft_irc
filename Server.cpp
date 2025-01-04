@@ -19,30 +19,30 @@ void	Server::NICK(std::vector<std::string> params)
 	// check if nickname is already in use in a user
 	// if not, set or change the prev one
 	// if so, issue an ERR_NICKNAMEINUSE numeric and ignore nick
-	std::cout << "in function nick" << std::endl;
+	std::cout << "Command:" << std::endl;
 	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << " end" << std::endl;
+		std::cout << params[i] << std::endl;
 }
 
 void	Server::USER(std::vector<std::string> params)
 {
-	std::cout << "in function user" << std::endl;
+	std::cout << "Command:" << std::endl;
 	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << " end" << std::endl;
+		std::cout << params[i] << std::endl;
 }
 
 void	Server::PASS(std::vector<std::string> params)
 {
-	std::cout << "in function pass" << std::endl;
+	std::cout << "Command:" << std::endl;
 	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << " end" << std::endl;
+		std::cout << params[i] << std::endl;
 }
 
 void	Server::KICK(std::vector<std::string> params)
 {
-	std::cout << "in function kick" << std::endl;
+	std::cout << "Command:" << std::endl;
 	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << " end" << std::endl;
+		std::cout << params[i] << std::endl;
 }
 
 // Direct Client-to-Client (DDC) file transfer comes here too
@@ -51,8 +51,9 @@ void	Server::PRIVMSG(std::vector<std::string> params)
 	// NEEDS CHANGE AFTER VECTOR SPLIT
 	// if (params.size() > 3)
 	// 	;
+	std::cout << "Command:" << std::endl;
 	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << " end" << std::endl;
+		std::cout << params[i] << std::endl;
 	// std::istringstream	stream(params);
 	// std::string					message;
 	// std::string					targets;
@@ -108,31 +109,37 @@ std::vector<std::string>	vecSplit(std::string toSplit, std::string septor)
 // parses single perfect commands for now. splits em into parameters in a vector
 void	Server::commandParser(std::string input)
 {
+	std::vector<std::string>	commands;
 	std::vector<std::string>	params;
 	std::string					colon;
 	std::string					others;
 
 	std::cout << input << std::endl;
-	size_t i = input.find(" :");
-	if (i != std::string::npos)
+	commands = vecSplit(input, "\r\n");
+	for (size_t i = 0; i < commands.size(); i++)
 	{
-		others = input.substr(0, i);
-		colon = input.substr(i + 2, input.size());
-		params = vecSplit(others, " ");
-		params.push_back(colon);
-	}
-	else
-		params = vecSplit(input, " ");
+		size_t pos = commands[i].find(" :");
+		if (pos != std::string::npos)
+		{
+			others = commands[i].substr(0, pos);
+			colon = commands[i].substr(pos + 2, commands[i].size());
+			params = vecSplit(others, " ");
+			params.push_back(colon);
+		}
+		else
+			params = vecSplit(commands[i], " ");
 
-	try
-	{
+		// try
+		// {
 		if (!params.empty() && fptr.find(params[0]) != fptr.end())
-			(this->*fptr[params[0]])(params);
+				(this->*fptr[params[0]])(params);
+		// }
+		// catch(const std::exception& e)
+		// {
+		// 	std::cerr << e.what() << '\n';
+		// }
 	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
-	}
+	exit(1);
 }
 
 // PRIVMSG burak hey :burak naber\r\n/PRIVMSG burak hey :burak naber\r\n

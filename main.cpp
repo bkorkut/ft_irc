@@ -6,9 +6,9 @@
 #include <unistd.h>
 #include "Server.hpp"
 #include <stdio.h>
-#include <iostream>     // for std::cout
-#include <cstdlib>     // for exit
-#include <cstring>     // for memset if needed
+#include <iostream>	// for std::cout
+#include <cstdlib>	// for exit
+#include <cstring>	// for memset if needed
 
 // int main(int ac, char **av)
 // {
@@ -30,14 +30,14 @@ int	main(/*int ac, char **av*/)
 {
 	// if (ac == 3)
 	// {
-
+		Server	server;
 		int	sd = socket(AF_INET, SOCK_STREAM, 0);
 		if (sd == -1)
 			return perror("Socket creation failed"), std::exit(EXIT_FAILURE), 1;
 
 		sockaddr_in	sa;
 		sa.sin_family = AF_INET;
-		sa.sin_port = htons(4243);
+		sa.sin_port = htons(6697);
 		sa.sin_addr.s_addr = INADDR_ANY;
 
 		if (bind(sd, (struct sockaddr *)(&sa), sizeof(sa)))
@@ -63,41 +63,41 @@ int	main(/*int ac, char **av*/)
 				int	k = 0;
 				if (fds[i].revents & POLLIN)
 				{
-					std::cout << "poolın" << std::endl;
-						if (i == 0)
-						{
-							int	fd = accept(sd, (struct sockaddr *)(&sa), &sa_len);
-							if (fd == -1)
-								return perror("Failed to accept request"), std::exit(EXIT_FAILURE), 1;
-							else
-							{
-								fds[num_fds].fd = fd;
-								fds[num_fds].events = POLLIN;
-								num_fds++;
-							}
-						}
+					std::cout << "pollin" << std::endl;
+					if (i == 0)
+					{
+						int	fd = accept(sd, (struct sockaddr *)(&sa), &sa_len);
+						if (fd == -1)
+							return perror("Failed to accept request"), std::exit(EXIT_FAILURE), 1;
 						else
 						{
-							ssize_t bytes = recv(fds[i].fd, buf, sizeof(buf) - 1, 0);
-							if (bytes > 0)
-							{
-								buf[bytes] = '\0';
-								std::cout << buf << std::endl;
-							}
+							fds[num_fds].fd = fd;
+							fds[num_fds].events = POLLIN;
+							num_fds++;
 						}
-						k++;
+					}
+					else
+					{
+						ssize_t bytes = recv(fds[i].fd, buf, sizeof(buf) - 1, 0);
+						if (bytes > 0)
+						{
+							buf[bytes] = '\0';
+							server.commandParser(buf);
+						}
+					}
+					k++;
 				}
 				else if (fds[i].revents & POLLHUP)
 				{
-						std::cout << "asdasd" << std::endl;
-						fds[i].fd = -1;
-						k++;
-						exit(1);
+					std::cout << "pollhup" << std::endl;
+					fds[i].fd = -1;
+					k++;
+					exit(1);
 				}
 				if (k == ready)
 					break ;
 			}
-	}
+		}
 	close(sd);
 	// }
 	return 0;

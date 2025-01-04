@@ -5,6 +5,7 @@
 # include "Channel.hpp"
 # include <iostream>
 # include <vector>
+# include <cstdlib>	// for exit
 
 # define ERR_NOSUCHNICK 401
 # define ERR_NOSUCHCHANNEL 403
