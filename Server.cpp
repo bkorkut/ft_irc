@@ -1,114 +1,9 @@
 #include <sstream>
 #include <vector>
-#include <list>
+#include <iostream>
 #include "Server.hpp"
 
-// Parameters: <subcommand> [:<capabilities>]
-void	Server::CAP(int fd, std::vector<std::string> params)
-{
-	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
-}
-
-// Parameters: <nickname>
-void	Server::NICK(int fd, std::vector<std::string> params)
-{
-	if (params.size() < 2)
-		return ; // ERR_NONICKNAMEGIVEN
-	if (params[1].find_first_not_of(NICKSET) != std::string::npos)
-		return ; // ERR_ERRONEOUSNICKNAME
-
-	// check if nickname is already in use in a user (NICKNAMEINUSE OR NICKCOLLISION)
-	// if not, set or change the prev one
-	// if so, issue an ERR_NICKNAMEINUSE numeric and ignore nick
-	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
-}
-
-// Parameters: <username> 0 * <realname>
-void	Server::USER(int fd, std::vector<std::string> params)
-{
-	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
-}
-
-// Parameters: <password>
-void	Server::PASS(int fd, std::vector<std::string> params)
-{
-	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
-}
-
-// Parameters: <channel> <user> *( "," <user> ) [<comment>]
-void	Server::KICK(int fd, std::vector<std::string> params)
-{
-	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
-}
-
-// Parameters: <target> [<modestring> [<mode arguments>...]]
-void	Server::MODE(int fd, std::vector<std::string> params)
-{
-	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
-}
-
-// Parameters: <channel> [<topic>]
-void	Server::TOPIC(int fd, std::vector<std::string> params)
-{
-	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
-}
-
-// Parameters: <nickname> <channel>
-void	Server::INVITE(int fd, std::vector<std::string> params)
-{
-	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
-}
-
-// Direct Client-to-Client (DDC) file transfer comes here too
-// Parameters: <target>{,<target>} <text to be sent>
-void	Server::PRIVMSG(int fd, std::vector<std::string> params)
-{
-	// NEEDS CHANGE AFTER VECTOR SPLIT
-	// if (params.size() > 3)
-	// 	;
-	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
-	// std::istringstream	stream(params);
-	// std::string					message;
-	// std::string					targets;
-	// std::vector<std::string>	target;
-
-	// stream >> targets;
-	// std::getline(stream >> std::ws, message);
-	// if (!message.empty() && message[0] == ':')
-	// 	message.erase(0, 1);
-	// stream.clear();
-	// stream.str(targets);
-	// while (stream.good())
-	// {
-	// 	std::getline(stream, targets, ',');
-	// 	target.push_back(targets);
-	// }
-
-	// std::cout << "in function privmsg" << std::endl;
-	// for(size_t i = 0; i < target.size(); i++)
-	// 	std::cout << target[i] << std::endl;
-	// // find and send message to clients here
-	// std::cout << message << std::endl;
-}
-
+// Constructor
 Server::Server()
 {
 	fptr["CAP"] = &Server::CAP;
@@ -141,6 +36,7 @@ std::vector<std::string>	vecSplit(std::string toSplit, std::string septor)
 	return (retval);
 }
 
+# include <cstdlib>	// for exit
 // parses single perfect commands for now. splits em into parameters in a vector
 void	Server::commandParser(int fd, std::string input)
 {

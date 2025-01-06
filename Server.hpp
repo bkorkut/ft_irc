@@ -3,9 +3,6 @@
 
 # include <map>
 # include "Channel.hpp"
-# include <iostream>
-# include <vector>
-# include <cstdlib>	// for exit
 
 # define NICKSET "abcdefghiklmnoprstuvwxyz1234567890[]{}|\\"
 
@@ -21,12 +18,12 @@ class Server
 		void	TOPIC(int fd, std::vector<std::string> params);
 		void	INVITE(int fd, std::vector<std::string> params);
 		void	PRIVMSG(int fd, std::vector<std::string> params);
-		std::map<std::string, void (Server::*)(int fd, std::vector<std::string> parameters)> fptr;
+		std::map<std::string, void (Server::*)(int fd, std::vector<std::string> parameters)>	fptr;
 		std::map<std::string, Channel>	channels;
 	public:
-				Server();
+							Server();
 		std::map<int, User>	users;
-		void	commandParser(int fd, std::string input);
+		void				commandParser(int fd, std::string input);
 };
 
 #endif
