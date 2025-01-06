@@ -70,6 +70,7 @@ void Socket::acceptClient() {
 	_newPollFD.events = POLLIN;
 	_newPollFD.revents = 0;
 	_fds.push_back(_newPollFD);
+	server.users.insert(std::make_pair(comFD, User(comFD)));
 
 	// TODO: Maybe save the client info for the commands here
 	std::cout << "Client with ID: " << comFD << " connected" << std::endl; // might delete this message later
@@ -88,7 +89,6 @@ void Socket::recieveData(int fd) {
 
 	// delete this later ~betül
 	std::cout << "Message:\n" << buf << "Bytes: " << bytes << std::endl;
-	Server server;
 	server.commandParser(fd, buf);
 }
 
