@@ -9,24 +9,32 @@
 #include <string>
 #include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h> 
+#include <poll.h>
+#include <vector>
 
 class Socket{
 private:
   int _socketFD;
   int _newSocketFD;
   int _portNum;
-  const std::string& _pswd; 
+  std::string _pswd; 
+  std::vector<struct pollfd> _fds;
   struct sockaddr_in _serverAddress;
+  struct pollfd _newPollFD;
 
-	// Preventing cononical form
+  // Preventing cononical form by making these private
   Socket& operator=(const Socket& other);
   Socket(const Socket& other);
-  Socket();
 
 public:
-  Socket(int portNum, const std::string& pswd);
+  Socket();
   ~Socket();
-  int acceptClient();
+  void initialize(int portNum, const std::string &pswd);
+  void closeFds();
+  void run();
+  void acceptClient();
+  void recieveData(int fd);
 };
 
 #endif

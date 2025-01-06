@@ -13,20 +13,19 @@ int isPort(std::string portNum) {
 }
 
 int main(int argc, char **argv) {
+  Socket s;
   try {
     if (argc != 3)
       throw std::invalid_argument("./ircserv <port> <password>");
 
-    // int portNum = isPort(argv[1]);
-    // Socket s(portNum, argv[2]); // Sending portnumber and password
+    s.initialize(isPort(argv[1]), argv[2]); // Sending portnumber and password
+    s.run();
 
-    Socket s(isPort(argv[1]), argv[2]); // Sending portnumber and password
   } catch (const std::exception &e) {
+    s.closeFds(); // you can make it from here or in the destructor of the class decide which is better 
     std::cerr << e.what() << std::endl;
   }
 }
-
-
 
 
 
