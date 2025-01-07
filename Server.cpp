@@ -105,6 +105,11 @@ void Server::recieveData(int fd) {
 	this->commandParser(fd, buf);
 }
 
+void Server::sendData(int fd, std::string data){
+	// needs to changed later
+	std::cout << "Message to client ID " << fd << ":\n" << data << std::endl;
+}
+
 void Server::closeFds() {
 	// TODO: close client fds
 

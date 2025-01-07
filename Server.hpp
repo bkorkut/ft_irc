@@ -29,8 +29,8 @@ class Server
 		struct sockaddr_in			_serverAddress;
 		struct pollfd				_newPollFD;
 		std::map<int, User>			_users;
-		std::map<std::string, Channel>	_channels;
-		std::map<std::string, void (Server::*)(int fd, std::vector<std::string> parameters)>	fptr;
+		std::map<std::string, Channel> _channels;
+		std::map<std::string, void (Server::*)(int fd, std::vector<std::string> parameters)> fptr;
 		// Member functions
 		void	CAP(int fd, std::vector<std::string> params);
 		void	NICK(int fd, std::vector<std::string> params);
@@ -53,6 +53,7 @@ class Server
 		void	run();
 		void	acceptClient();
 		void	recieveData(int fd);
+		void	sendData(int fd, std::string data); // new!
 		void	commandParser(int fd, std::string input);
 };
 
