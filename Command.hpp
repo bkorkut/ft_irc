@@ -32,7 +32,7 @@
 # define ERR_CHANOPRIVSNEEDED(source, channel)           ": 482 " + source + " " + channel + " :You're not the channel operator" + "\r\n"                                              //Bir kanalda operatör ayrıcalıkları gerektiğini belirtir.
 
 // Reply Codes
-# define RPL_LISTSTART(nick, numusers)                   ": 321 " + nick + " Channel : "+ numusers + "\r\n"                                                                            ///LIST komutunun başlangıcını belirtir.
+# define RPL_LISTSTART(nick, num_users)                   ": 321 " + nick + " Channel : "+ num_users + "\r\n"                                                                            ///LIST komutunun başlangıcını belirtir.
 # define RPL_LIST(source, channel, userCount, topic)     ": 322 " + source + " " + channel + " " + userCount + " " + topic + "\r\n"                                                    //Bir kanalın kullanıcı sayısını ve konusunu belirtir.
 # define RPL_LISTEND(source)                             "323 " + source + " :End of /LIST" "\r\n"                                                                                     ///LIST komutunun sonunu belirtir.
 # define RPL_NOTOPIC(source, channel)                    "331 " + source + " " + channel + " :No topic is set" + "\r\n"                                                                //Bir kanalda konu belirlenmediğini bildirir.

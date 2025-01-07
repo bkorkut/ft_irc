@@ -1,4 +1,4 @@
-#include "Socket.hpp"
+#include "Server.hpp"
 
 // Refactor isPort using findfirstnotof function this looks like C
 int isPort(std::string portNum) {
@@ -13,7 +13,7 @@ int isPort(std::string portNum) {
 }
 
 int main(int argc, char **argv) {
-	Socket s;
+	Server s;
 	try {
 		if (argc != 3)
 			throw std::invalid_argument("./ircserv <port> <password>");

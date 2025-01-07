@@ -12,16 +12,16 @@ void	Server::NICK(int fd, std::vector<std::string> params)
 	// needs several touppers everywhere
 	if (params[1].find_first_not_of(NICKSET) != std::string::npos)
 		return ; // ERR_ERRONEOUSNICKNAME
-	for (std::map<int, User>::const_iterator i = users.begin(); i != users.end(); ++i)
+	for (std::map<int, User>::const_iterator i = _users.begin(); i != _users.end(); ++i)
 	{
 		if (i->second.getNick() == params[1])
 			return ; // ERR_NICKNAMEINUSE
 	}
 
 	// save previous nick for reply
-	users[fd].setNick(params[1]);
+	_users[fd].setNick(params[1]);
 
-	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
+	std::cout << "Command from user:" << this->_users[fd].getNick() << std::endl;
 	for (size_t i = 0; i < params.size(); i++)
 		std::cout << params[i] << std::endl;
 
