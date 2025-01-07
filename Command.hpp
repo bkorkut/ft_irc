@@ -10,7 +10,6 @@
 # include <sstream>
 # include <ctime>
 
-
 // Error Codes
 # define ERR_NOSUCHNICK(source, nick)                    "401 " + source + " " + nick + " :No such nick" + "\r\n"                                                                      //Belirtilen takma adın mevcut olmadığını bildirir.
 # define ERR_NOSUCHSERVER(source, server)                "402 " + source + " " + server + " :No such server" + "\r\n"                                                                  //Belirtilen sunucunun mevcut olmadığını bildirir.
@@ -19,9 +18,8 @@
 # define ERR_NORECIPIENT(source)                         "411     " + source + " :No" + "\r\n"                                                                                         //Alıcı belirtilmediğini bildirir.
 # define ERR_NOTEXTTOSEND(source)                        "412 " + source + " :No text to send" + "\r\n"                                                                                //Gönderilecek bir metin olmadığını belirtir.
 # define ERR_NONICKNAMEGIVEN(source)                     "431 " + ((source).empty() ? "" : (source + " ")) + ":No nickname given\r\n"                                                  //Bir takma ad belirtilmediğini bildirir.
-// # define ERR_NONICKNAMEGIVEN(source)                  "431 " + source + " :No nickname given" + "\r\n"                                                                              //Bir takma ad belirtilmediğini bildirir.
 # define ERR_ERRONEUSNICKNAME(source, nick)              "432 " + ((source).empty() ? "" : (source + " ")) + nick + " :Erroneous nickname" + "\r\n"                                    //Belirtilen takma adın hatalı olduğunu bildirir.
-# define ERR_NICKNAMEINUSE(source, nick)                 "433 " + source + " " + nick + " :Nickname is already in use" + "\r\n"                                                        //Belirtilen takma adın kullanımda olduğunu bildirir.
+# define ERR_NICKNAMEINUSE(source, nick)                 "433 " + ((source).empty() ? "" : (source + " ")) + nick + " :Nickname is already in use" + "\r\n"                            //Belirtilen takma adın kullanımda olduğunu bildirir.
 # define ERR_USERNOTINCHANNEL(source, nick, channel)     "441 " + source + " " + nick + " " + channel + " :They aren't on that channel" + "\r\n"                                       //Belirtilen kullanıcının kanalda olmadığını belirtir.
 # define ERR_NOTONCHANNEL(source, channel)               "442 " + source + " " + channel + " :You're not on that channel" + "\r\n"                                                     //Kullanıcının belirtilen kanalda olmadığını belirtir.
 # define ERR_USERONCHANNEL(source, channel)              "443 " + source + " " + channel + " :is already on channel" + "\r\n"                                                          //Kullanıcının belirtilen kanalda zaten olduğunu belirtir.
@@ -46,5 +44,8 @@
 # define RPL_KICK(source, channel, target, reason)       ":" + source + " KICK " + channel + " " + target + " :" + reason + "\r\n"                                                     //Bir kullanıcının bir kanaldan atıldığını belirtir.
 # define RPL_PART(prefix, channel, message)              ":" + prefix + " PART " + channel + " :" + message + "\r\n"                                                                   //Bir kullanıcının bir kanaldan ayrıldığını belirtir.
 # define RPL_QUIT(source, message)                       " :" + source + " QUIT :Quit: " + message + "\r\n"                                                                            //Bir kullanıcının sunucudan ayrıldığını bildirir.
+
+std::string	toLower(std::string str);
+std::vector<std::string>	vecSplit(std::string toSplit, std::string septor);
 
 #endif

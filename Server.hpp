@@ -14,6 +14,7 @@
 # include <vector>
 # include <map>
 # include "Channel.hpp"
+# include "Command.hpp"
 
 # define NICKSET "abcdefghiklmnoprstuvwxyz1234567890[]{}|\\"
 
