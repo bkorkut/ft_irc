@@ -33,7 +33,6 @@ class Server
 		std::map<std::string, Channel> _channels;
 		std::map<std::string, void (Server::*)(int fd, std::vector<std::string> parameters)> fptr;
 		// Member functions
-		void	CAP(int fd, std::vector<std::string> params);
 		void	NICK(int fd, std::vector<std::string> params);
 		void	USER(int fd, std::vector<std::string> params);
 		void	PASS(int fd, std::vector<std::string> params);

@@ -3,10 +3,14 @@
 #include <iostream>
 #include "../Server.hpp"
 
-// Parameters: <username> 0 * <realname>
+// Parameters: <user> <mode> <unused> <realname>
 void	Server::USER(int fd, std::vector<std::string> params)
 {
-	std::cout << "Command from user: " << this->_users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
+	if (params.size() < 5)
+		return sendData(fd, ERR_NEEDMOREPARAMS(std::string("USER")));
+	if (!_users[fd].getUname().empty())
+		return sendData(fd, ERR_ALREADYREGISTERED);
+	_users[fd].setUname(params[1]);
+	_users[fd].setRname(params[4]);
+	// check user mods to set and use <mode>
 }

@@ -6,7 +6,6 @@
 // Constructor
 Server::Server()
 {
-	fptr["CAP"] = &Server::CAP;
 	fptr["NICK"] = &Server::NICK;
 	fptr["USER"] = &Server::USER;
 	fptr["PASS"] = &Server::PASS;
@@ -135,7 +134,7 @@ void Server::run() {
 }
 
 // Ctrl D (eof) still needs handling
-// parses single perfect commands for now. splits em into parameters in a vector
+// parses and sendscommands to their appropriate functions
 void	Server::commandParser(int fd, std::string input)
 {
 	std::vector<std::string>	commands;
