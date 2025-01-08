@@ -1,7 +1,7 @@
 clients have specific id's
 
 eg. commands:
-obtain list of connected users
+obtain list of connected _users
 obtain additional details about a specific nick
 join channel
 send message to channel -> to every user in channel

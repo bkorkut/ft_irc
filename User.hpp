@@ -11,7 +11,7 @@ class	User
 	public:
 							User(void);
 							User(int fd);
-		const std::string	&getNick(void);
+		const std::string	&getNick(void) const;
 		void				setNick(std::string nick);
 };
 

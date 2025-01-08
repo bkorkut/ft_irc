@@ -1,114 +1,9 @@
 #include <sstream>
 #include <vector>
-#include <list>
+#include <iostream>
 #include "Server.hpp"
 
-// Parameters: <subcommand> [:<capabilities>]
-void	Server::CAP(int fd, std::vector<std::string> params)
-{
-	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
-}
-
-// Parameters: <nickname>
-void	Server::NICK(int fd, std::vector<std::string> params)
-{
-	if (params.size() < 2)
-		return ; // ERR_NONICKNAMEGIVEN
-	if (params[1].find_first_not_of(NICKSET) != std::string::npos)
-		return ; // ERR_ERRONEOUSNICKNAME
-
-	// check if nickname is already in use in a user (NICKNAMEINUSE OR NICKCOLLISION)
-	// if not, set or change the prev one
-	// if so, issue an ERR_NICKNAMEINUSE numeric and ignore nick
-	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
-}
-
-// Parameters: <username> 0 * <realname>
-void	Server::USER(int fd, std::vector<std::string> params)
-{
-	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
-}
-
-// Parameters: <password>
-void	Server::PASS(int fd, std::vector<std::string> params)
-{
-	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
-}
-
-// Parameters: <channel> <user> *( "," <user> ) [<comment>]
-void	Server::KICK(int fd, std::vector<std::string> params)
-{
-	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
-}
-
-// Parameters: <target> [<modestring> [<mode arguments>...]]
-void	Server::MODE(int fd, std::vector<std::string> params)
-{
-	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
-}
-
-// Parameters: <channel> [<topic>]
-void	Server::TOPIC(int fd, std::vector<std::string> params)
-{
-	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
-}
-
-// Parameters: <nickname> <channel>
-void	Server::INVITE(int fd, std::vector<std::string> params)
-{
-	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
-}
-
-// Direct Client-to-Client (DDC) file transfer comes here too
-// Parameters: <target>{,<target>} <text to be sent>
-void	Server::PRIVMSG(int fd, std::vector<std::string> params)
-{
-	// NEEDS CHANGE AFTER VECTOR SPLIT
-	// if (params.size() > 3)
-	// 	;
-	std::cout << "Command from user:" << this->users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
-	// std::istringstream	stream(params);
-	// std::string					message;
-	// std::string					targets;
-	// std::vector<std::string>	target;
-
-	// stream >> targets;
-	// std::getline(stream >> std::ws, message);
-	// if (!message.empty() && message[0] == ':')
-	// 	message.erase(0, 1);
-	// stream.clear();
-	// stream.str(targets);
-	// while (stream.good())
-	// {
-	// 	std::getline(stream, targets, ',');
-	// 	target.push_back(targets);
-	// }
-
-	// std::cout << "in function privmsg" << std::endl;
-	// for(size_t i = 0; i < target.size(); i++)
-	// 	std::cout << target[i] << std::endl;
-	// // find and send message to clients here
-	// std::cout << message << std::endl;
-}
-
+// Constructor
 Server::Server()
 {
 	fptr["CAP"] = &Server::CAP;
@@ -122,25 +17,124 @@ Server::Server()
 	fptr["PRIVMSG"] = &Server::PRIVMSG;
 }
 
-std::vector<std::string>	vecSplit(std::string toSplit, std::string septor)
-{
-	size_t						pos = 0;
-	size_t						foundPos;
-	std::string					tmp;
-	std::vector<std::string>	retval;
-
-	do
-	{
-		foundPos = toSplit.find(septor, pos);
-		if (foundPos != std::string::npos)
-			retval.push_back(toSplit.substr(pos, foundPos - pos));
-		else
-			retval.push_back(toSplit.substr(pos, toSplit.size()));
-		pos = foundPos + septor.size();
-	} while (foundPos != std::string::npos);
-	return (retval);
+// Destructor
+Server::~Server() {
+	// this->closeFds();
 }
 
+void Server::initialize(int portNum, const std::string &pswd) {
+	_portNum = portNum;
+	_pswd = pswd;
+
+	_socketFD = socket(AF_INET, SOCK_STREAM, 0);
+	if (_socketFD == -1)
+		throw std::runtime_error("Socket is not created");
+
+	// need to bind an ip address and port to the socket
+	// _serverAddress is a struct (sockaddr_in _serverAddress inside of the class)
+	// | it was gonna be sockaddr_in6 if it was for ipv6
+	_serverAddress.sin_family = AF_INET;
+	_serverAddress.sin_port = htons(_portNum); // converting portnumber to big endian
+	_serverAddress.sin_addr.s_addr = INADDR_ANY;
+
+	int en = 1;
+	if (setsockopt(_socketFD, SOL_SOCKET, SO_REUSEADDR, &en,
+								 sizeof(en))) // Making the port re-usable without waiting
+		throw(std::runtime_error("faild to set option (SO_REUSEADDR) on socket"));
+
+	/*	//commented to see if it's gonna block the whole connection uncomment this later
+	if (fcntl(_socketFD, F_SETFL, O_NONBLOCK) == -1) // making the socket using a nonblock connection for recv(read) or send(write) to not make the connection wait
+	throw(std::runtime_error("faild to set option (O_NONBLOCK) on socket"));
+	*/
+
+	// sockaddr is a general structure for both ipv4 and ipv6, we're using one
+	// bind function instead of two seperate ones
+	if (bind(_socketFD, (sockaddr *)&_serverAddress, sizeof(_serverAddress)))
+		throw std::runtime_error(
+				"Couldn't bind ip address & the port to the socket");
+
+	if (listen(_socketFD, SOMAXCONN)) // SOMAXCONN = max amount of clients that can connect
+		throw std::runtime_error("Listen failed");
+
+	_newPollFD.fd = _socketFD; // NOT: Gördüğüm kadarıyla bu değişkenler tek seferlik atama için kullanılıyor ve classtan ulaşılmasına ihtiyaç yok ~betül
+	_newPollFD.events = POLLIN;
+	_newPollFD.revents = 0;
+	_fds.push_back(_newPollFD);
+}
+
+void Server::acceptClient() {
+	struct sockaddr_in client; // maybe use memset after it && maybe put it inside the class
+	socklen_t client_len = sizeof(client); //& ref so it can update the variables
+	int comFD = accept(_socketFD, (struct sockaddr *)&client, &client_len);
+
+	if (comFD == -1) {
+		std::cerr << "Socket connection failed" << std::endl;
+		return;
+	}
+
+	/*	//commented to see if it's gonna block the whole connection uncomment this later
+	if (fcntl(comFD, F_SETFL, O_NONBLOCK)){
+	close(comFD); // maybe close the comFD in the closeFD function?
+	std::cerr << "fcntl() failed" << std::endl;
+		return;
+	}
+	*/
+
+	_newPollFD.fd = comFD;
+	_newPollFD.events = POLLIN;
+	_newPollFD.revents = 0;
+	_fds.push_back(_newPollFD);
+	_users.insert(std::make_pair(comFD, User(comFD)));
+
+	// TODO: Maybe save the client info for the commands here
+	std::cout << "Client with ID: " << comFD << " connected" << std::endl; // might delete this message later
+}
+
+void Server::recieveData(int fd) {
+	// TODO
+
+	char buf[512]; // maybe memset the area
+
+	ssize_t bytes = recv(fd, buf, sizeof(buf) - 1, 0);
+	if (bytes > 0) {
+		buf[bytes] = '\0';
+	}
+
+	// delete this later ~betül
+	std::cout << "Message:\n" << buf << "Bytes: " << bytes << std::endl;
+	this->commandParser(fd, buf);
+}
+
+void Server::sendData(int fd, std::string data){
+	// needs to changed later
+	std::cout << "Message to client ID " << fd << ":\n" << data << std::endl;
+}
+
+void Server::closeFds() {
+	// TODO: close client fds
+
+	if (this->_socketFD != -1) { // if the socketFd is created therefore it isn't -1
+		std::cout << "Server <" << _socketFD << "> Disconnected" << std::endl; // might delete this message later
+		close(this->_socketFD);
+	}
+}
+
+void Server::run() {
+	while (1 /* TODO: && the signal is not interupting*/) {
+		if (poll(_fds.data(), _fds.size(), -1) == -1) // -1 is the timeout paramater
+			throw std::runtime_error("poll() function failed");
+		for (size_t i = 0; i < _fds.size(); i++) { // NOT: poll'dan dönen hazır fd sayısına göre karşılaştırıp dönmen vakit kazandırabilir ~ betül
+			if (_fds[i].revents & POLLIN) {
+				if (_fds[i].fd == _socketFD)
+					acceptClient();
+				else
+					recieveData(_fds[i].fd);
+			}
+		}
+	}
+}
+
+// Ctrl D (eof) still needs handling
 // parses single perfect commands for now. splits em into parameters in a vector
 void	Server::commandParser(int fd, std::string input)
 {
@@ -174,9 +168,4 @@ void	Server::commandParser(int fd, std::string input)
 		// 	std::cerr << e.what() << '\n';
 		// }
 	}
-	exit(1);
 }
-
-// PRIVMSG burak hey :burak naber\r\n/PRIVMSG burak hey :burak naber\r\n
-// CAP LS\r\nPASS 123\r\nNICK burak\r\nUSER a a a a
-// PRIVMSG burak hey :burak naber\r\n

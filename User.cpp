@@ -10,7 +10,7 @@ User::User(int fd) : id(fd)
 	(void)id;
 }
 
-const std::string	&User::getNick(void)
+const std::string	&User::getNick(void) const
 {
 	return (this->nick);
 }
