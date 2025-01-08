@@ -8,8 +8,8 @@
       "args": ["4141", "a"],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/via/codes/work/ft_irc",
-      "program": "/home/via/codes/work/ft_irc/a.out",
+      "cwd": "/home/atasyure/Desktop/ft_irc",
+      "program": "/home/atasyure/Desktop/ft_irc/ircserv",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

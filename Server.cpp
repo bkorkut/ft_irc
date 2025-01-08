@@ -19,7 +19,7 @@ Server::Server()
 
 // Destructor
 Server::~Server() {
-	// this->closeFds();
+	this->closeFds();
 }
 
 void Server::initialize(int portNum, const std::string &pswd) {
@@ -86,49 +86,74 @@ void Server::acceptClient() {
 	_fds.push_back(_newPollFD);
 	_users.insert(std::make_pair(comFD, User(comFD)));
 
-	// TODO: Maybe save the client info for the commands here
-	std::cout << "Client with ID: " << comFD << " connected" << std::endl; // might delete this message later
+	// might delete this message later
+	std::cout << "Client with ID: " << comFD << " connected" << std::endl; 
 }
 
 void Server::recieveData(int fd) {
-	// TODO
 
 	char buf[512]; // maybe memset the area
 
 	ssize_t bytes = recv(fd, buf, sizeof(buf) - 1, 0);
-	if (bytes > 0) {
-		buf[bytes] = '\0';
+	if (bytes <= 0){
+		//delete this later
+		std::cout << "User <" << fd << "> Disconnected" << " cause of recv() func" << std::endl;
+		close(fd);
+		_users.erase(fd);
 	}
-
-	// delete this later ~betül
+	else if (bytes > 0){
+	buf[bytes] = '\0';
+	// delete this later 
 	std::cout << "Message:\n" << buf << "Bytes: " << bytes << std::endl;
 	this->commandParser(fd, buf);
+	}
 }
 
 void Server::sendData(int fd, std::string data){
-	// needs to changed later
+	//data += "\r\n";
+	//delete this later
+	std::cout << data << std::endl;
+	if(send(fd, data.c_str(), data.size(), 0) == -1){
+		//delete this later
+		std::cerr << "send() failed" << std::endl;
+	}
 	std::cout << "Message to client ID " << fd << ":\n" << data << std::endl;
 }
 
 void Server::closeFds() {
-	// TODO: close client fds
+	if(!_users.empty()){
+		for(std::map<int, User>::iterator it = _users.begin(); it != _users.end(); ++it){
+		//might delete printing message later
+		std::cout << "User <" << it->first << "> Disconnected" << std::endl;
+			close(it->first);
+		}
+	}
 
 	if (this->_socketFD != -1) { // if the socketFd is created therefore it isn't -1
-		std::cout << "Server <" << _socketFD << "> Disconnected" << std::endl; // might delete this message later
+		//might delete printing message later
+		std::cout << "Server <" << _socketFD << "> Disconnected" << std::endl;
 		close(this->_socketFD);
 	}
 }
 
+bool Server::Signal = false;
+void Server::SignalHandler(int signum) {
+	(void)signum;
+	Server::Signal = true;
+}
+
 void Server::run() {
-	while (1 /* TODO: && the signal is not interupting*/) {
-		if (poll(_fds.data(), _fds.size(), -1) == -1) // -1 is the timeout paramater
+	while (!Server::Signal) {
+	int readyStatus = poll(_fds.data(), _fds.size(), -1);  // -1 is the timeout paramater
+		if (readyStatus == -1 && !Server::Signal) 
 			throw std::runtime_error("poll() function failed");
-		for (size_t i = 0; i < _fds.size(); i++) { // NOT: poll'dan dönen hazır fd sayısına göre karşılaştırıp dönmen vakit kazandırabilir ~ betül
+		for (size_t i = 0; i < _fds.size() && readyStatus > 0; i++) { 
 			if (_fds[i].revents & POLLIN) {
 				if (_fds[i].fd == _socketFD)
 					acceptClient();
 				else
 					recieveData(_fds[i].fd);
+			readyStatus--; 
 			}
 		}
 	}
