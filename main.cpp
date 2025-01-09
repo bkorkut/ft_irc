@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
 		s.run();
 
 	} catch (const std::exception &e) {
-		//s.closeFds(); // you can make it from here or in the destructor of the class decide which is better
+		//s.closeFds(); // better to do it in destructor
 		std::cerr << e.what() << std::endl;
 	}
 }

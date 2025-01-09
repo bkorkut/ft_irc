@@ -96,7 +96,7 @@ void Server::recieveData(int fd) {
 
 	ssize_t bytes = recv(fd, buf, sizeof(buf) - 1, 0);
 	if (bytes <= 0){
-		//delete this later
+		//might delete printing message later
 		std::cout << "User <" << fd << "> Disconnected" << " cause of recv() func" << std::endl;
 		close(fd);
 		_users.erase(fd);
@@ -110,13 +110,10 @@ void Server::recieveData(int fd) {
 }
 
 void Server::sendData(int fd, std::string data){
-	//data += "\r\n";
-	//delete this later
-	std::cout << data << std::endl;
-	if(send(fd, data.c_str(), data.size(), 0) == -1){
-		//delete this later
+	if(send(fd, data.c_str(), data.size(), 0) == -1)
 		std::cerr << "send() failed" << std::endl;
-	}
+
+	//should delete this later
 	std::cout << "Message to client ID " << fd << ":\n" << data << std::endl;
 }
 
