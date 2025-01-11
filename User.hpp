@@ -11,6 +11,7 @@ class	User
 		std::string	userName;
 		std::string	realName;
 	public:
+		std::string	buffer;
 		bool		registered;
 		bool		pass;
 		bool		user;

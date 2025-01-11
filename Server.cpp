@@ -86,7 +86,7 @@ void Server::acceptClient() {
 	_users.insert(std::make_pair(comFD, User(comFD)));
 
 	// might delete this message later
-	std::cout << "Client with ID: " << comFD << " connected" << std::endl; 
+	std::cout << "Client with ID: " << comFD << " connected" << std::endl;
 }
 
 void Server::recieveData(int fd) {
@@ -102,7 +102,7 @@ void Server::recieveData(int fd) {
 	}
 	else if (bytes > 0){
 	buf[bytes] = '\0';
-	// delete this later 
+	// delete this later
 	std::cout << "Message:\n" << buf << "Bytes: " << bytes << std::endl;
 	this->commandParser(fd, buf);
 	}
@@ -141,15 +141,15 @@ void Server::SignalHandler(int signum) {
 void Server::run() {
 	while (!Server::Signal) {
 	int readyStatus = poll(_fds.data(), _fds.size(), -1);  // -1 is the timeout paramater
-		if (readyStatus == -1 && !Server::Signal) 
+		if (readyStatus == -1 && !Server::Signal)
 			throw std::runtime_error("poll() function failed");
-		for (size_t i = 0; i < _fds.size() && readyStatus > 0; i++) { 
+		for (size_t i = 0; i < _fds.size() && readyStatus > 0; i++) {
 			if (_fds[i].revents & POLLIN) {
 				if (_fds[i].fd == _socketFD)
 					acceptClient();
 				else
 					recieveData(_fds[i].fd);
-			readyStatus--; 
+			readyStatus--;
 			}
 		}
 	}
@@ -163,9 +163,18 @@ void	Server::commandParser(int fd, std::string input)
 	std::vector<std::string>	params;
 	std::string					colon;
 	std::string					others;
+	std::string					command;
 
-	std::cout << input << std::endl;
-	commands = vecSplit(input, "\r\n");
+	command = _users.find(fd)->second.buffer.append(input);
+	commands = vecSplit(command, "\r\n");
+	if (command.size() < 2 || !(command[command.size() - 2 ] == '\r'
+		&& command[command.size() - 1] == '\n'))
+	{
+		_users.find(fd)->second.buffer = commands.back();
+		commands.pop_back();
+	}
+	else
+		_users.find(fd)->second.buffer.clear();
 	for (size_t i = 0; i < commands.size(); i++)
 	{
 		size_t pos = commands[i].find(" :");
