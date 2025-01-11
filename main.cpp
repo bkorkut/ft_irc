@@ -13,16 +13,20 @@ int isPort(std::string portNum) {
 }
 
 int main(int argc, char **argv) {
-	Server s;
 	try {
 		if (argc != 3)
 			throw std::invalid_argument("./ircserv <port> <password>");
+
+		signal(SIGINT, Server::SignalHandler);
+		signal(SIGQUIT, Server::SignalHandler);
+
+		Server s;
 
 		s.initialize(isPort(argv[1]), argv[2]); // Sending portnumber and password
 		s.run();
 
 	} catch (const std::exception &e) {
-		s.closeFds(); // you can make it from here or in the destructor of the class decide which is better
+		//s.closeFds(); // better to do it in destructor
 		std::cerr << e.what() << std::endl;
 	}
 }

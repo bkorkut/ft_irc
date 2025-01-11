@@ -13,6 +13,7 @@
 # include <poll.h>
 # include <vector>
 # include <map>
+# include <csignal>
 # include "Channel.hpp"
 # include "Command.hpp"
 
@@ -29,6 +30,7 @@ class Server
 		std::vector<struct pollfd>	_fds;
 		struct sockaddr_in			_serverAddress;
 		struct pollfd				_newPollFD;
+		static bool Signal;
 		std::map<int, User>			_users;
 		std::map<std::string, Channel> _channels;
 		std::map<std::string, void (Server::*)(int fd, std::vector<std::string> parameters)> fptr;
@@ -42,7 +44,7 @@ class Server
 		void	INVITE(int fd, std::vector<std::string> params);
 		void	PRIVMSG(int fd, std::vector<std::string> params);
 		// Preventing cononical form by making these private
-				Server(const Server& other);
+		Server(const Server& other);
 		Server&	operator=(const Server& other);
 
 	public:
@@ -55,7 +57,7 @@ class Server
 		void	recieveData(int fd);
 		void	sendData(int fd, std::string data); // new!
 		void	commandParser(int fd, std::string input);
+		static void 	SignalHandler(int signum);
 };
 
 #endif
-
