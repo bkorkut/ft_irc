@@ -14,9 +14,10 @@ void	Server::NICK(int fd, std::vector<std::string> params)
 		if (toLower(i->second.getNick()) == toLower(params[1]))
 			return sendData(fd, ERR_NICKNAMEINUSE(params[1]));
 	if (_users[fd].getNick().empty())
-		sendData(fd, "NICK "+ params[1]);
+		sendData(fd, "NICK "+ params[1] + "\r\n");
 	else
-		sendData(fd, ":" + _users[fd].getNick() + " NICK " + params[1]);
+		sendData(fd, ":" + _users[fd].getNick() + " NICK " + params[1] + "\r\n");
 	_users[fd].setNick(params[1]);
+	_users[fd].nick = true;
 	return ;
 }

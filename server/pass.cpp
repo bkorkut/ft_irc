@@ -8,12 +8,10 @@ void	Server::PASS(int fd, std::vector<std::string> params)
 {
 	if (params.size() < 2)
 		return sendData(fd, ERR_NEEDMOREPARAMS(std::string("PASS")));
-	if (_users[fd].registered || _users[fd].pass)
+	if (_users[fd].registered)
 		return sendData(fd, ERR_ALREADYREGISTERED);
-	
-	_users[fd].pass = true;
-
-	std::cout << "Command from user: " << this->_users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
+	if (params[1] == _pswd)
+		_users[fd].pass = true;
+	else
+		; // disconnect
 }
