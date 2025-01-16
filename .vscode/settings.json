@@ -59,6 +59,7 @@
   "files.associations": {
     "iostream": "cpp",
     "ostream": "cpp",
-    "stdexcept": "cpp"
+    "stdexcept": "cpp",
+    "map": "cpp"
   }
 }

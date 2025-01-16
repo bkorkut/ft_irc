@@ -4,9 +4,17 @@
 #include "../Server.hpp"
 
 // Parameters: <password>
-void	Server::PASS(int fd, std::vector<std::string> params)
+void Server::PASS(int fd, std::vector<std::string> params)
 {
-	std::cout << "Command from user: " << this->_users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
+    if (params.size() < 2)
+        return sendData(fd, ERR_NEEDMOREPARAMS(_users[fd].getNick(), "PASS"));
+    
+    if (_users[fd].getIsRegistered())
+        return sendData(fd, ERR_ALREADYREGISTERED(_users[fd].getNick()));
+
+    _users[fd].setPassword(params[1]);
+    if (!_users[fd].authenticate(_pswd)) {
+        // Wrong password handling can be added here
+        return;
+    }
 }

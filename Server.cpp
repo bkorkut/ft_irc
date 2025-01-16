@@ -4,17 +4,17 @@
 #include "Server.hpp"
 
 // Constructor
-Server::Server()
+Server::Server() : _serverName(SERVER_NAME), _socketFD(-1), _newSocketFD(-1)
 {
-	fptr["CAP"] = &Server::CAP;
-	fptr["NICK"] = &Server::NICK;
-	fptr["USER"] = &Server::USER;
-	fptr["PASS"] = &Server::PASS;
-	fptr["KICK"] = &Server::KICK;
-	fptr["MODE"] = &Server::MODE;
-	fptr["TOPIC"] = &Server::TOPIC;
-	fptr["INVITE"] = &Server::INVITE;
-	fptr["PRIVMSG"] = &Server::PRIVMSG;
+    fptr["CAP"] = &Server::CAP;
+    fptr["NICK"] = &Server::NICK;
+    fptr["USER"] = &Server::USER;
+    fptr["PASS"] = &Server::PASS;
+    fptr["KICK"] = &Server::KICK;
+    fptr["MODE"] = &Server::MODE;
+    fptr["TOPIC"] = &Server::TOPIC;
+    fptr["INVITE"] = &Server::INVITE;
+    fptr["PRIVMSG"] = &Server::PRIVMSG;
 }
 
 // Destructor

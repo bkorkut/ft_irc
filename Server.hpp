@@ -18,10 +18,24 @@
 # include "Command.hpp"
 
 # define NICKSET "abcdefghiklmnoprstuvwxyz1234567890[]{}|\\"
+# define SERVER_NAME "ft_irc" 
 
 class Server
 {
-	private:
+    private:
+        // Welcome için
+        std::string                 _serverName;
+        int                         _socketFD;
+        int                         _newSocketFD;
+        int                         _portNum;
+        std::string                 _pswd;
+        std::vector<struct pollfd>  _fds;
+        struct sockaddr_in          _serverAddress;
+        struct pollfd               _newPollFD;
+        static bool Signal;
+        std::map<int, User>         _users;
+        std::map<std::string, Channel> _channels;
+        std::map<std::string, void (Server::*)(int fd, std::vector<std::string> parameters)> fptr;
 		// Attributes
 		int							_socketFD;
 		int							_newSocketFD;
