@@ -30,7 +30,7 @@ class Server
 		int							_portNum;
 		std::string					_pswd;
 		std::vector<struct pollfd>	_fds;
-		struct sockaddr_in			serverAddress;
+		struct sockaddr_in			_serverAddress;
 		struct pollfd				_newPollFD;
 		static bool					Signal;
 		std::map<int, User>			_users;
@@ -38,7 +38,6 @@ class Server
 		std::map<std::string, void (Server::*)(int fd, std::vector<std::string> parameters)> fptr;
 
 		// Member functions
-		void	CAP(int fd, std::vector<std::string> params);
 		void	NICK(int fd, std::vector<std::string> params);
 		void	USER(int fd, std::vector<std::string> params);
 		void	PASS(int fd, std::vector<std::string> params);

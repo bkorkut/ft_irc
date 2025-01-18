@@ -2,9 +2,9 @@
 
 void Server::JOIN(int fd, std::vector<std::string> params) {
     std::cout << "\033[32m[JOIN Command]\033[0m" << std::endl;
-    
+
     if (params.size() < 2)
-        return sendData(fd, ERR_NEEDMOREPARAMS(_users[fd].getNick(), "JOIN"));
+        return sendData(fd, ERR_NEEDMOREPARAMS(std::string("JOIN")));
 
     std::string channelName = params[1];
     if (channelName[0] != '#')
@@ -28,7 +28,7 @@ void Server::JOIN(int fd, std::vector<std::string> params) {
 
     // Send join confirmation to all users in channel
     std::string joinMsg = ":" + user->getNick() + " JOIN " + channelName + "\r\n";
-    
+
     const std::map<int, User*>& channelUsers = channelIt->second.getUsers();
     std::map<int, User*>::const_iterator userIt;
     for (userIt = channelUsers.begin(); userIt != channelUsers.end(); ++userIt) {
@@ -40,6 +40,6 @@ void Server::JOIN(int fd, std::vector<std::string> params) {
     sendData(fd, RPL_NAMREPLY(user->getNick(), channelName, userList));
     sendData(fd, RPL_ENDOFNAMES(user->getNick(), channelName));
 
-    std::cout << "User " << user->getNick() << " joined channel " << channelName 
+    std::cout << "User " << user->getNick() << " joined channel " << channelName
               << (isNewChannel ? " (as operator)" : "") << std::endl;
 }

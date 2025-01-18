@@ -20,7 +20,7 @@ void	Server::USER(int fd, std::vector<std::string> params)
 
 	if (_users[fd].checkRegistration()) {
 		std::string prefix = _users[fd].getNick() + "!" + _users[fd].getUsername() + "@" + _serverName;
-		sendData(fd, RPL_WELCOME(_serverName, _users[fd].getNick(), prefix));
+		sendData(fd, RPL_WELCOME(_serverName, _users[fd].getNick(), prefix, "IP"));
 	}
-	_users[fd].user = true;
+	// _users[fd].user = true;
 }

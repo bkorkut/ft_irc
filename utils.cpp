@@ -1,7 +1,7 @@
 #include <vector>
 #include <string>
 
-// Converts string tolower
+// Converts string toLower
 std::string	toLower(std::string str)
 {
 	for(std::string::iterator c = str.begin(); c != str.end(); c++)

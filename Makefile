@@ -8,7 +8,7 @@ SRCS = main.cpp Server.cpp User.cpp utils.cpp\
 		server/pass.cpp server/topic.cpp \
 		server/kick.cpp server/nick.cpp \
 		server/privmsg.cpp server/user.cpp \
-		server/cap.cpp utils.cpp server/join.cpp
+		server/join.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 

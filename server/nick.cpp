@@ -22,5 +22,5 @@ void Server::NICK(int fd, std::vector<std::string> params) {
     else
         sendData(fd, ":" + _users[fd].getNick() + " NICK " + params[1] + "\r\n");
     _users[fd].setNick(params[1]);
-	_users[fd].nick = true;
+	// _users[fd].nick = true;
 }

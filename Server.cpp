@@ -6,7 +6,6 @@
 // Constructor
 Server::Server() : _serverName(SERVER_NAME), _socketFD(-1), _newSocketFD(-1)
 {
-    fptr["CAP"] = &Server::CAP;
     fptr["NICK"] = &Server::NICK;
     fptr["USER"] = &Server::USER;
     fptr["PASS"] = &Server::PASS;
@@ -196,11 +195,12 @@ void	Server::commandParser(int fd, std::string input)
 		// 	std::cerr << e.what() << '\n';
 		// }
 	}
-	if (!_users.find(fd)->second.registered && _users.find(fd)->second.pass
-		&& _users.find(fd)->second.nick && _users.find(fd)->second.user)
-	{
-		_users.find(fd)->second.registered = true;
-		sendData(fd, RPL_WELCOME(std::string("my_server"), _users.find(fd)->second.getNick(),
-			_users.find(fd)->second.getUname(), "The_IP"));
-	}
+	// BETÜL OLD REGISTER CHECK
+	// if (!_users.find(fd)->second.registered && _users.find(fd)->second.pass
+	// 	&& _users.find(fd)->second.nick && _users.find(fd)->second.user)
+	// {
+	// 	_users.find(fd)->second.registered = true;
+	// 	sendData(fd, RPL_WELCOME(std::string("my_server"), _users.find(fd)->second.getNick(),
+	// 		_users.find(fd)->second.getUname(), "The_IP"));
+	// }
 }

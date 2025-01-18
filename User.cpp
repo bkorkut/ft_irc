@@ -2,7 +2,7 @@
 
 User::User(void) : id(-1), isAuthenticated(false), isRegistered(false) {}
 
-User::User(int fd) : id(fd), registered(false), pass(false), user(false), nick(false), isAuthenticated(false), isRegistered(false) {}
+User::User(int fd) : id(fd), /*registered(false), pass(false), user(false), nick(false),*/ isAuthenticated(false), isRegistered(false) {}
 
 const std::string& User::getNick() const {
     return nick;
