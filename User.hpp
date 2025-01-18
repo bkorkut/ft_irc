@@ -1,27 +1,40 @@
 #ifndef USER_HPP
-# define USER_HPP
+#define USER_HPP
 
 #include <string>
 
-class	User
-{
-	private:
-		const int	id;
-		std::string	nick;
-	public:
-							User(void);
-							User(int fd);
-		const std::string	&getNick(void) const;
-		void				setNick(std::string nick);
-};
+class User {
+private:
+    const int id;
+    std::string nick;
+    std::string username;
+    std::string realname;
+    std::string password;
+    bool isAuthenticated;
+    bool isRegistered;
 
-// class	Metadata
-// {
-// 	private:
-	//	User	*User;
-	//	bool	voice;
-	//	bool	chCreator;
-	//	bool	chOperator;
-// };
+public:
+    // Constructors - sadece deklarasyon
+    User(void);
+    User(int fd);
+
+    // Getters
+    const std::string& getNick() const;
+    const std::string& getUsername() const;
+    const std::string& getRealname() const;
+    bool getIsAuthenticated() const;
+    bool getIsRegistered() const;
+    int getId() const;
+
+    // Setters
+    void setNick(std::string newNick);
+    void setUsername(std::string newUsername);
+    void setRealname(std::string newRealname);
+    void setPassword(std::string newPassword);
+    
+    // Authentication methods
+    bool authenticate(const std::string& serverPassword);
+    bool checkRegistration();
+};
 
 #endif
