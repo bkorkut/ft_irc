@@ -4,16 +4,18 @@
 #include "Server.hpp"
 
 // Constructor
-Server::Server()
+Server::Server() : _serverName(SERVER_NAME), _socketFD(-1), _newSocketFD(-1)
 {
-	fptr["NICK"] = &Server::NICK;
-	fptr["USER"] = &Server::USER;
-	fptr["PASS"] = &Server::PASS;
-	fptr["KICK"] = &Server::KICK;
-	fptr["MODE"] = &Server::MODE;
-	fptr["TOPIC"] = &Server::TOPIC;
-	fptr["INVITE"] = &Server::INVITE;
-	fptr["PRIVMSG"] = &Server::PRIVMSG;
+    fptr["CAP"] = &Server::CAP;
+    fptr["NICK"] = &Server::NICK;
+    fptr["USER"] = &Server::USER;
+    fptr["PASS"] = &Server::PASS;
+    fptr["KICK"] = &Server::KICK;
+    fptr["MODE"] = &Server::MODE;
+    fptr["TOPIC"] = &Server::TOPIC;
+    fptr["INVITE"] = &Server::INVITE;
+    fptr["PRIVMSG"] = &Server::PRIVMSG;
+    fptr["JOIN"] = &Server::JOIN;
 }
 
 // Destructor
@@ -90,22 +92,17 @@ void Server::acceptClient() {
 }
 
 void Server::recieveData(int fd) {
+    char buf[512];
+    ssize_t bytes = recv(fd, buf, sizeof(buf) - 1, 0);
 
-	char buf[512]; // maybe memset the area
-
-	ssize_t bytes = recv(fd, buf, sizeof(buf) - 1, 0);
-	if (bytes <= 0){
-		//might delete printing message later
-		std::cout << "User <" << fd << "> Disconnected" << " cause of recv() func" << std::endl;
-		close(fd);
-		_users.erase(fd);
-	}
-	else if (bytes > 0){
-	buf[bytes] = '\0';
-	// delete this later
-	std::cout << "Message:\n" << buf << "Bytes: " << bytes << std::endl;
-	this->commandParser(fd, buf);
-	}
+    if (bytes <= 0) {
+        close(fd);
+        _users.erase(fd);
+    }
+    else if (bytes > 0) {
+        buf[bytes] = '\0';
+        this->commandParser(fd, buf);
+    }
 }
 
 void Server::sendData(int fd, std::string data){
@@ -165,6 +162,7 @@ void	Server::commandParser(int fd, std::string input)
 	std::string					others;
 	std::string					command;
 
+	std::cout << "\n\033[34m[New Client Message]\033[0m Client ID: " << fd << std::endl;
 	command = _users.find(fd)->second.buffer.append(input);
 	commands = vecSplit(command, "\r\n");
 	if (command.size() < 2 || !(command[command.size() - 2 ] == '\r'

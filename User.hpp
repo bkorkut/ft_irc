@@ -1,29 +1,40 @@
 #ifndef USER_HPP
-# define USER_HPP
+#define USER_HPP
 
 #include <string>
 
-class	User
-{
-	private:
-		const int	id;
-		std::string	nickName;
-		std::string	userName;
-		std::string	realName;
-	public:
-		std::string	buffer;
-		bool		registered;
-		bool		pass;
-		bool		user;
-		bool		nick;
-							User(void);
-							User(int fd);
-		const std::string	&getNick(void) const;
-		void				setNick(std::string nick);
-		const std::string	&getUname(void) const;
-		void				setUname(std::string uname);
-		const std::string	&getRname(void) const;
-		void				setRname(std::string rname);
+class User {
+private:
+	const int id;
+	std::string nick;
+	std::string username;
+	std::string realname;
+	std::string password;
+	bool isAuthenticated;
+	bool isRegistered;
+
+public:
+	// Constructors - sadece deklarasyon
+	User(void);
+	User(int fd);
+
+	// Getters
+	const std::string& getNick() const;
+	const std::string& getUsername() const;
+	const std::string& getRealname() const;
+	bool getIsAuthenticated() const;
+	bool getIsRegistered() const;
+	int getId() const;
+
+	// Setters
+	void setNick(std::string newNick);
+	void setUsername(std::string newUsername);
+	void setRealname(std::string newRealname);
+	void setPassword(std::string newPassword);
+
+	// Authentication methods
+	bool authenticate(const std::string& serverPassword);
+	bool checkRegistration();
 };
 
 // class	Metadata

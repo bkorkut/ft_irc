@@ -1,41 +1,61 @@
 #include "User.hpp"
 
-User::User(void) : id(-1)
-{
-	(void)id;
+User::User(void) : id(-1), isAuthenticated(false), isRegistered(false) {}
+
+User::User(int fd) : id(fd), registered(false), pass(false), user(false), nick(false), isAuthenticated(false), isRegistered(false) {}
+
+const std::string& User::getNick() const {
+    return nick;
 }
 
-User::User(int fd) : id(fd), registered(false), pass(false), user(false), nick(false)
-{
-	(void)id;
+const std::string& User::getUsername() const {
+    return username;
 }
 
-const std::string	&User::getNick(void) const
-{
-	return (this->nickName);
+const std::string& User::getRealname() const {
+    return realname;
 }
 
-void	User::setNick(std::string nickName)
-{
-	this->nickName = nickName;
+bool User::getIsAuthenticated() const {
+    return isAuthenticated;
 }
 
-const std::string	&User::getUname(void) const
-{
-	return (this->userName);
+bool User::getIsRegistered() const {
+    return isRegistered;
 }
 
-void	User::setUname(std::string userName)
-{
-	this->userName = userName;
+int User::getId() const {
+    return id;
 }
 
-const std::string	&User::getRname(void) const
-{
-	return (this->realName);
+void User::setNick(std::string newNick) {
+    nick = newNick;
 }
 
-void	User::setRname(std::string realName)
-{
-	this->realName = realName;
+void User::setUsername(std::string newUsername) {
+    username = newUsername;
+}
+
+void User::setRealname(std::string newRealname) {
+    realname = newRealname;
+}
+
+void User::setPassword(std::string newPassword) {
+    password = newPassword;
+}
+
+bool User::authenticate(const std::string& serverPassword) {
+    if (password == serverPassword) {
+        isAuthenticated = true;
+        return true;
+    }
+    return false;
+}
+
+bool User::checkRegistration() {
+    if (!nick.empty() && !username.empty() && !realname.empty() && isAuthenticated) {
+        isRegistered = true;
+        return true;
+    }
+    return false;
 }
