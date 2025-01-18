@@ -28,6 +28,14 @@ int User::getId() const {
     return id;
 }
 
+uint8_t User::getFlags(UserFlags flag){
+    return modeFlags;
+}
+
+bool User::hasFlag(UserFlags flag){
+    return modeFlags & flag;
+}
+
 void User::setNick(std::string newNick) {
     nick = newNick;
 }
@@ -42,6 +50,14 @@ void User::setRealname(std::string newRealname) {
 
 void User::setPassword(std::string newPassword) {
     password = newPassword;
+}
+
+void User::setFlag(UserFlags flag){
+    modeFlags |= flag;
+}
+
+void User::unsetFlag(UserFlags flag){
+    modeFlags &= ~flag;
 }
 
 bool User::authenticate(const std::string& serverPassword) {
