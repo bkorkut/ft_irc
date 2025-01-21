@@ -5,6 +5,7 @@
 
 // Constructor
 Server::Server() : _serverName(SERVER_NAME), _socketFD(-1), _newSocketFD(-1)
+Server::Server() : _serverName(SERVER_NAME), _socketFD(-1), _newSocketFD(-1)
 {
     fptr["NICK"] = &Server::NICK;
     fptr["USER"] = &Server::USER;
@@ -104,12 +105,13 @@ void Server::recieveData(int fd) {
     }
 }
 
-void Server::sendData(int fd, std::string data){
-	if(send(fd, data.c_str(), data.size(), 0) == -1)
-		std::cerr << "send() failed" << std::endl;
-
-	//should delete this later
-	std::cout << "Message to client ID " << fd << ":\n" << data << std::endl;
+void Server::sendData(int fd, std::string data) {
+    ssize_t result = send(fd, data.c_str(), data.size(), 0);
+    if (result == -1) {
+        std::cerr << "Error sending data to fd " << fd << std::endl;
+        return;
+    }
+    std::cout << "Sent " << result << " bytes to fd " << fd << ":\n" << data << std::endl;
 }
 
 void Server::closeFds() {

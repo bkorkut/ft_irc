@@ -1,45 +1,88 @@
 #include "../Server.hpp"
 
-void Server::JOIN(int fd, std::vector<std::string> params) {
+void Server::JOIN(int fd, std::vector<std::string> parameters) {
     std::cout << "\033[32m[JOIN Command]\033[0m" << std::endl;
+    
+    // Debug için parametre kontrolü
+    std::cout << "Parameters received:" << std::endl;
+    for (size_t i = 0; i < parameters.size(); i++) {
+        std::cout << "Param[" << i << "]: " << parameters[i] << std::endl;
+    }
+    
+    if (parameters.size() < 2)
+        return sendData(fd, ERR_NEEDMOREPARAMS(_users[fd].getNick(), "JOIN"));
 
-    if (params.size() < 2)
-        return sendData(fd, ERR_NEEDMOREPARAMS(std::string("JOIN")));
+    std::cout << "Debug: After params check" << std::endl;
 
-    std::string channelName = params[1];
+    std::string channelName = parameters[1];
     if (channelName[0] != '#')
         channelName = "#" + channelName;
 
-    // Check if channel exists
+    std::cout << "Debug: Channel name: " << channelName << std::endl;
+
+    // Kullanıcı kontrolü
+    User* user = &_users[fd];
+    if (!user->getIsRegistered()) {
+        std::cout << "Debug: User not registered" << std::endl;
+        return; // Kayıtlı olmayan kullanıcı kanala katılamaz
+    }
+
     std::map<std::string, Channel>::iterator channelIt = _channels.find(channelName);
     bool isNewChannel = (channelIt == _channels.end());
 
-    // If channel doesn't exist, create it
+    std::cout << "Debug: Is new channel: " << (isNewChannel ? "yes" : "no") << std::endl;
+
+    // Kullanıcının zaten kanalda olup olmadığını kontrol et
+    if (!isNewChannel && channelIt->second.hasUser(fd)) {
+        std::cout << "Debug: User already in channel" << std::endl;
+        return; // Kullanıcı zaten kanalda
+    }
+
     if (isNewChannel) {
-        std::cout << "Creating new channel: " << channelName << std::endl;
-        std::pair<std::map<std::string, Channel>::iterator, bool> result;
-        result = _channels.insert(std::make_pair(channelName, Channel(channelName)));
-        channelIt = result.first;
+        Channel newChannel(channelName);
+        channelIt = _channels.insert(std::make_pair(channelName, newChannel)).first;
+        std::cout << "Debug: Created new channel" << std::endl;
     }
 
-    // Add user to channel
-    User* user = &_users[fd];
-    channelIt->second.addUser(user, isNewChannel); // Make them operator if they created the channel
+    // Kullanıcıyı kanala ekle
+    channelIt->second.addUser(user, isNewChannel);
+    std::cout << "Debug: Added user to channel" << std::endl;
 
-    // Send join confirmation to all users in channel
-    std::string joinMsg = ":" + user->getNick() + " JOIN " + channelName + "\r\n";
+    // JOIN mesajı
+    std::string prefix = user->getNick() + "!" + user->getUsername() + "@" + _serverName;
+    std::string joinMsg = ":" + prefix + " JOIN " + channelName + "\r\n";
+    std::cout << "Debug: Join message: " << joinMsg;
+    sendData(fd, joinMsg);
 
-    const std::map<int, User*>& channelUsers = channelIt->second.getUsers();
-    std::map<int, User*>::const_iterator userIt;
-    for (userIt = channelUsers.begin(); userIt != channelUsers.end(); ++userIt) {
-        sendData(userIt->first, joinMsg);
+    // TOPIC durumu
+    const std::string& topic = channelIt->second.getTopic();
+    if (!topic.empty()) {
+        std::string topicMsg = RPL_TOPIC(user->getNick(), channelName, topic);
+        std::cout << "Debug: Topic message: " << topicMsg;
+        sendData(fd, topicMsg);
+    } else {
+        std::string noTopicMsg = RPL_NOTOPIC(user->getNick(), channelName);
+        std::cout << "Debug: No topic message: " << noTopicMsg;
+        sendData(fd, noTopicMsg);
     }
 
-    // Send channel info to the user who joined
+    // NAMES listesi
     std::string userList = channelIt->second.getUserList();
-    sendData(fd, RPL_NAMREPLY(user->getNick(), channelName, userList));
-    sendData(fd, RPL_ENDOFNAMES(user->getNick(), channelName));
+    std::string namesMsg = RPL_NAMREPLY(user->getNick(), channelName, userList);
+    std::string endNamesMsg = RPL_ENDOFNAMES(user->getNick(), channelName);
+    
+    std::cout << "Debug: Names message: " << namesMsg;
+    std::cout << "Debug: End names message: " << endNamesMsg;
+    
+    sendData(fd, namesMsg);
+    sendData(fd, endNamesMsg);
 
-    std::cout << "User " << user->getNick() << " joined channel " << channelName
-              << (isNewChannel ? " (as operator)" : "") << std::endl;
+    // MODE mesajı
+    if (isNewChannel) {
+        std::string modeMsg = ":" + _serverName + " MODE " + channelName + " +o " + user->getNick() + "\r\n";
+        std::cout << "Debug: Mode message: " << modeMsg;
+        sendData(fd, modeMsg);
+    }
+
+    std::cout << "Debug: JOIN command completed" << std::endl;
 }
