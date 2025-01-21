@@ -15,6 +15,7 @@ Server::Server() : _serverName(SERVER_NAME), _socketFD(-1), _newSocketFD(-1)
     fptr["TOPIC"] = &Server::TOPIC;
     fptr["INVITE"] = &Server::INVITE;
     fptr["PRIVMSG"] = &Server::PRIVMSG;
+    fptr["JOIN"] = &Server::JOIN;
 }
 
 // Destructor
@@ -91,30 +92,26 @@ void Server::acceptClient() {
 }
 
 void Server::recieveData(int fd) {
-
-	char buf[512]; // maybe memset the area
-
-	ssize_t bytes = recv(fd, buf, sizeof(buf) - 1, 0);
-	if (bytes <= 0){
-		//might delete printing message later
-		std::cout << "User <" << fd << "> Disconnected" << " cause of recv() func" << std::endl;
-		close(fd);
-		_users.erase(fd);
-	}
-	else if (bytes > 0){
-	buf[bytes] = '\0';
-	// delete this later 
-	std::cout << "Message:\n" << buf << "Bytes: " << bytes << std::endl;
-	this->commandParser(fd, buf);
-	}
+    char buf[512];
+    ssize_t bytes = recv(fd, buf, sizeof(buf) - 1, 0);
+    
+    if (bytes <= 0) {
+        close(fd);
+        _users.erase(fd);
+    }
+    else if (bytes > 0) {
+        buf[bytes] = '\0';
+        this->commandParser(fd, buf);
+    }
 }
 
-void Server::sendData(int fd, std::string data){
-	if(send(fd, data.c_str(), data.size(), 0) == -1)
-		std::cerr << "send() failed" << std::endl;
-
-	//should delete this later
-	std::cout << "Message to client ID " << fd << ":\n" << data << std::endl;
+void Server::sendData(int fd, std::string data) {
+    ssize_t result = send(fd, data.c_str(), data.size(), 0);
+    if (result == -1) {
+        std::cerr << "Error sending data to fd " << fd << std::endl;
+        return;
+    }
+    std::cout << "Sent " << result << " bytes to fd " << fd << ":\n" << data << std::endl;
 }
 
 void Server::closeFds() {
@@ -158,36 +155,27 @@ void Server::run() {
 
 // Ctrl D (eof) still needs handling
 // parses single perfect commands for now. splits em into parameters in a vector
-void	Server::commandParser(int fd, std::string input)
-{
-	std::vector<std::string>	commands;
-	std::vector<std::string>	params;
-	std::string					colon;
-	std::string					others;
+void Server::commandParser(int fd, std::string input) {
+    std::vector<std::string> commands;
+    std::vector<std::string> params;
+    std::string colon;
+    std::string others;
 
-	std::cout << input << std::endl;
-	commands = vecSplit(input, "\r\n");
-	for (size_t i = 0; i < commands.size(); i++)
-	{
-		size_t pos = commands[i].find(" :");
-		if (pos != std::string::npos)
-		{
-			others = commands[i].substr(0, pos);
-			colon = commands[i].substr(pos + 2, commands[i].size());
-			params = vecSplit(others, " ");
-			params.push_back(colon);
-		}
-		else
-			params = vecSplit(commands[i], " ");
+    std::cout << "\n\033[34m[New Client Message]\033[0m Client ID: " << fd << std::endl;
 
-		// try
-		// {
-		if (!params.empty() && fptr.find(params[0]) != fptr.end())
-				(this->*fptr[params[0]])(fd, params);
-		// }
-		// catch(const std::exception& e)
-		// {
-		// 	std::cerr << e.what() << '\n';
-		// }
-	}
+    commands = vecSplit(input, "\r\n");
+    for (size_t i = 0; i < commands.size(); i++) {
+        size_t pos = commands[i].find(" :");
+        if (pos != std::string::npos) {
+            others = commands[i].substr(0, pos);
+            colon = commands[i].substr(pos + 2, commands[i].size());
+            params = vecSplit(others, " ");
+            params.push_back(colon);
+        }
+        else
+            params = vecSplit(commands[i], " ");
+
+        if (!params.empty() && fptr.find(params[0]) != fptr.end())
+            (this->*fptr[params[0]])(fd, params);
+    }
 }
