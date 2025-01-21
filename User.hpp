@@ -4,14 +4,24 @@
 # include <string>
 # include <cstdint>
 
+enum UserModes
+{
+	INVISIBLE	= 'i',
+	SERVNOTICE	= 's',
+	WALLOPS		= 'w',
+	OPERATOR	= 'o',
+	AWAY		= 'a',
+	RESTRICTED	= 'r'
+};
+
 enum	UserFlags
 {
-	INVISIBLE	= 1 << 0,	// (00000001) marks a users as invisible
-	SERVNOTICE	= 1 << 1,	// (00000010) marks a user for receipt of server notices
-	WALLOPS		= 1 << 2,	// (00000100) user receives wallops
-	OPERATOR	= 1 << 3,	// (00001000) operator flag
-	AWAY		= 1 << 4,	// (00010000) user is flagged as away
-	RESTRICTED	= 1 << 5	// (00100000) restricted user connection
+	B_INVISIBLE		= 1 << 0,	// (00000001) marks a users as invisible
+	B_SERVNOTICE	= 1 << 1,	// (00000010) marks a user for receipt of server notices
+	B_WALLOPS		= 1 << 2,	// (00000100) user receives wallops
+	B_OPERATOR		= 1 << 3,	// (00001000) operator flag
+	B_AWAY			= 1 << 4,	// (00010000) user is flagged as away
+	B_RESTRICTED	= 1 << 5	// (00100000) restricted user connection
 };
 
 class User {

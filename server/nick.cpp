@@ -13,8 +13,7 @@ void Server::NICK(int fd, std::vector<std::string> params) {
     if (toLower(params[1]).find_first_not_of(NICKSET) != std::string::npos)
         return sendData(fd, ERR_ERRONEUSNICKNAME(params[1]));
 
-    for (std::map<int, User>::const_iterator i = _users.begin(); i != _users.end(); ++i)
-        if (toLower(i->second.getNick()) == toLower(params[1]))
+    if (findUserWithNick(_users, params[1]) != NULL)
             return sendData(fd, ERR_NICKNAMEINUSE(params[1]));
 
     if (_users[fd].getNick().empty())

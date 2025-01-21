@@ -36,6 +36,7 @@
 
 // Reply Codes
 # define RPL_WELCOME(server, nick, user, host)			":" + server + " 001 " + nick + " :Welcome to the Internet Relay Network " + nick + "!" + user + "@" + host + "\r\n"		//Clientin servera başarıyla kayıt olduğunu haber verir.
+# define RPL_UMODEIS(server, modes)						":" + server + " 221 " + modes + "\r\n"
 # define RPL_LISTSTART(nick, num_users)					": 321 " + nick + " Channel : "+ num_users + "\r\n"														//LIST komutunun başlangıcını belirtir.
 # define RPL_LIST(source, channel, userCount, topic)	": 322 " + source + " " + channel + " " + userCount + " " + topic + "\r\n"								//Bir kanalın kullanıcı sayısını ve konusunu belirtir.
 # define RPL_LISTEND(source)							"323 " + source + " :End of /LIST" "\r\n"																//LIST komutunun sonunu belirtir.
@@ -50,6 +51,9 @@
 # define RPL_QUIT(source, message)						" :" + source + " QUIT :Quit: " + message + "\r\n"														//Bir kullanıcının sunucudan ayrıldığını bildirir.
 
 std::string	toLower(std::string str);
+std::string	flagsToString(uint16_t flags);
+std::string	flagsToString(uint8_t flags);
+User *findUserWithNick(std::map<int, User> &users, std::string nick);
 std::vector<std::string>	vecSplit(std::string toSplit, std::string septor);
 
 #endif

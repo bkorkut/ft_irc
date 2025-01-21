@@ -14,6 +14,12 @@ void	Server::MODE(int fd, std::vector<std::string> params)
 		return sendData(fd, ERR_NEEDMOREPARAMS(std::string("MODE")));
 	if (std::strchr("#&+!", params[1][0]) != NULL)
 	{
+		if (/*Member status modes*/) // takes nick as argument
+			;
+		else if (/*channel flags*/) // takes no extra argument
+			;
+		else // channel access control, takes mask as argument
+			;
 		if (/*The given channel is unknown*/)
 			return sendData(fd, ERR_NOSUCHCHANNEL(_serverName, "Channel"));
 		if (/*User not on channel*/)
@@ -29,10 +35,15 @@ void	Server::MODE(int fd, std::vector<std::string> params)
 	}
 	else // User MODE
 	{
-		if (/*The given mode is not known*/)
-			return sendData(fd, ERR_UMODEUNKNOWNFLAG(_serverName));
-		if (/*A user tries to change the mode of a user other than themselves*/)
+		User *user = findUserWithNick(_users, params[1]);
+		if (user == NULL)
+			return sendData(fd, ERR_NOSUCHNICK(_serverName, params[1]));
+		if (_users[fd].getNick() != user->getNick())
 			return sendData(fd, ERR_USERSDONTMATCH(_serverName));
+		if (params.size() < 3)
+			return sendData(fd, RPL_UMODEIS(_serverName, flagsToString(_users[fd].getFlags())));
+		if (/*The given mode is not known*/) // needs string to flag converter util
+			return sendData(fd, ERR_UMODEUNKNOWNFLAG(_serverName));
 	}
 	// for (size_t i = 0; i < params.size(); i++)
 	// 	std::cout << params[i] << std::endl;
