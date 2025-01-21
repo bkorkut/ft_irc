@@ -25,11 +25,14 @@
 # define ERR_USERONCHANNEL(source, channel)				"443 " + source + " " + channel + " :is already on channel\r\n"											//Kullanıcının belirtilen kanalda zaten olduğunu belirtir.
 # define ERR_NEEDMOREPARAMS(command)					"461 " + command + " :Not enough parameters\r\n"														//Komutun çalışması için daha fazla parametre gerektiğini belirtir.
 # define ERR_ALREADYREGISTERED							"462 :Unauthorized command (already registered)\r\n"													//Kullanıcının zaten kayıtlı olduğunu belirtir.
+# define ERR_KEYSET(server, channel)					":" + server + " 467 " + channel + " :Channel key already set\r\n"
 # define ERR_CHANNELISFULL(source, channel)				"471 " + source + " " + channel + " :Cannot join channel (+l)\r\n"										//Kanalın dolu olduğunu ve daha fazla kullanıcı kabul edemediğini belirtir.
-# define ERR_UNKNOWNMODE(nick, mode)					"472 " + nick + " " + mode + " :is unknown mode char to me\r\n"											//Belirtilen modun bilinmeyen bir mod olduğunu belirtir.
+# define ERR_UNKNOWNMODE(server, char, channel)			":" + server + " 472 " + char + " :is unknown mode char to me for " + channel + "\r\n"					//Belirtilen modun bilinmeyen bir mod olduğunu belirtir.
 # define ERR_INVITEONLYCHAN(nick, channel)				"473 " + nick + " " + channel + " :Cannot join channel (+i)\r\n"										//Bir kanala davet olmadan katılmaya çalışıldığını belirtir.
 # define ERR_BADCHANNELKEY(source, channel)				"475 " + source + " " + channel + " :Cannot join channel (+k)\r\n"										//Kanalın bir anahtarla (şifre) korunduğunu belirtir.
 # define ERR_CHANOPRIVSNEEDED(source, channel)			": 482 " + source + " " + channel + " :You're not the channel operator\r\n"								//Bir kanalda operatör ayrıcalıkları gerektiğini belirtir.
+# define ERR_UMODEUNKNOWNFLAG(server)					":" + server + " 501 :Unknown MODE flag\r\n"
+# define ERR_USERSDONTMATCH(server)						":" + server + " 502 :Cannot change mode for other users\r\n"
 
 // Reply Codes
 # define RPL_WELCOME(server, nick, user, host)			":" + server + " 001 " + nick + " :Welcome to the Internet Relay Network " + nick + "!" + user + "@" + host + "\r\n"		//Clientin servera başarıyla kayıt olduğunu haber verir.
@@ -41,7 +44,7 @@
 # define RPL_NAMREPLY(source, channel, nickList)		": 353 " + source + " = " + channel + " :" + nickList + "\r\n"											//Bir kanaldaki kullanıcıların listesini içerir.
 # define RPL_ENDOFNAMES(source, channel)				"366 " + source + " " + channel + " :End of /NAMES list." + "\r\n"										//Bir kanalın kullanıcı listesinin sonunu belirtir.
 # define RPL_JOIN(source, channel)						":" + source + " JOIN :" + channel + "\r\n"																//Bir kullanıcının bir kanala katıldığını belirtir.
-// # define RPL_WELCOME(server, nick, prefix)				":" + server  + " 001 " + nick +" :Welcome to the Internet Relay Network " + prefix + "\r\n"			//Sunucuya bağlanan kullanıcıya hoş geldiniz mesajını gönderir.
+// # define RPL_WELCOME(server, nick, prefix)				":" + server  + " 001 " + nick +" :Welcome to the Internet Relay Network " + prefix + "\r\n"		//Sunucuya bağlanan kullanıcıya hoş geldiniz mesajını gönderir.
 # define RPL_KICK(source, channel, target, reason)		":" + source + " KICK " + channel + " " + target + " :" + reason + "\r\n"								//Bir kullanıcının bir kanaldan atıldığını belirtir.
 # define RPL_PART(prefix, channel, message)				":" + prefix + " PART " + channel + " :" + message + "\r\n"												//Bir kullanıcının bir kanaldan ayrıldığını belirtir.
 # define RPL_QUIT(source, message)						" :" + source + " QUIT :Quit: " + message + "\r\n"														//Bir kullanıcının sunucudan ayrıldığını bildirir.

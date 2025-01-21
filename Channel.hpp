@@ -8,7 +8,7 @@
 enum ChannelFlags
 {
 	CREATOR = 'O',
-	OPERATOR = 'o',
+	CHANOP = 'o',
 	VOICE = 'v',
 	ANONYMOUS = 'a',
 	INVITE = 'i',
@@ -30,7 +30,7 @@ class Channel {
 private:
 	std::string name;
 	std::map<int, bool>		operators; // fd -> is_operator
-	std::map<int, User*>	users;	// fd -> User pointer
+	std::map<int, User &>	users;	// fd -> User pointer
 	std::string				topic;
 
 public:
