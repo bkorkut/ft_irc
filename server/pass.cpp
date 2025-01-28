@@ -20,6 +20,5 @@ void Server::PASS(int fd, std::vector<std::string> params) {
         std::cout << "Debug: Password authentication successful" << std::endl;
     } else {
         std::cout << "Debug: Password authentication failed" << std::endl;
-        // Wrong password handling can be added here
     }
 }
