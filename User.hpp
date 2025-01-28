@@ -2,7 +2,9 @@
 #define USER_HPP
 
 # include <string>
-# include <cstdint>
+
+typedef unsigned char uint8_t;  // C++98 uyumlu tanım
+typedef unsigned short uint16_t;  // C++98 uyumlu tanım
 
 enum UserModes
 {

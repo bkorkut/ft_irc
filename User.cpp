@@ -29,6 +29,22 @@ int User::getId() const {
     return id;
 }
 
+// Flag management
+uint8_t User::getFlags(UserFlags flag){
+	return this->modeFlags;
+}
+
+bool User::hasFlag(UserFlags flag){
+	return this->modeFlags & flag;
+}
+void User::setFlag(UserFlags flag){
+	this->modeFlags |= flag;
+}
+
+void User::unsetFlag(UserFlags flag){
+	this->modeFlags &= ~flag;
+}
+
 void User::setNick(std::string newNick) {
     nick = newNick;
 }

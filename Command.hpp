@@ -51,9 +51,10 @@
 # define RPL_QUIT(source, message)						" :" + source + " QUIT :Quit: " + message + "\r\n"														//Bir kullanıcının sunucudan ayrıldığını bildirir.
 
 std::string	toLower(std::string str);
-std::string	flagsToString(uint16_t flags);
-std::string	flagsToString(uint8_t flags);
-User *findUserWithNick(std::map<int, User> &users, std::string nick);
+std::string	channelFlagsToString(uint16_t flags);
+std::string	userFlagsToString(uint8_t flags);
+UserFlags	switchToUserMode(char c);
+User		*findUserWithNick(std::map<int, User> &users, std::string nick);
 std::vector<std::string>	vecSplit(std::string toSplit, std::string septor);
 
 #endif

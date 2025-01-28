@@ -14,24 +14,32 @@ void Server::MODE(int fd, std::vector<std::string> params)
 		return sendData(fd, ERR_NEEDMOREPARAMS(std::string("MODE")));
 	if (std::strchr("#&+!", params[1][0]) != NULL)
 	{
-		if (/*Member status modes*/) // takes nick as argument
-			;
-		else if (/*channel flags*/) // takes no extra argument
-			;
-		else // channel access control, takes mask as argument
-			;
-		if (/*The given channel is unknown*/)
-			return sendData(fd, ERR_NOSUCHCHANNEL(_serverName, "Channel"));
-		if (/*User not on channel*/)
-			return sendData(fd, ERR_NOTONCHANNEL(_serverName, "Channel"));
-		if (_users.find(fd)->second.hasFlag(OPERATOR)) // the user hasnt operator privileges
-			return sendData(fd, ERR_CHANOPRIVSNEEDED(_serverName, "Channel"));
-		if (/*there is no user with the provided nick*/)
-			return sendData(fd, ERR_NOSUCHNICK(_serverName, "provided nick"));
-		if (/*The given mode is not known*/)
-			return sendData(fd, ERR_UNKNOWNMODE(_serverName, "Char", "Channel"));
-		if (/*Channel key is already set*/)
-			return sendData(fd, ERR_KEYSET(_serverName, "Channel"));
+		if (params.size() < 3)
+			return sendData(fd, ERR_NEEDMOREPARAMS(std::string("MODE")));
+		if (params.size() < 4 /*and is a no parameter taking flag command*/)
+		{
+			// channel flags
+		}
+		else if (/*check if its a nick taking command*/)
+		{
+			// Member status modes
+		}
+		else if (/*check if its a mask taking command*/)
+		{
+			// channel access control
+		}
+		// if (/*The given channel is unknown*/)
+		// 	return sendData(fd, ERR_NOSUCHCHANNEL(_serverName, "Channel"));
+		// if (/*User not on channel*/)
+		// 	return sendData(fd, ERR_NOTONCHANNEL(_serverName, "Channel"));
+		// if (_users.find(fd)->second.hasFlag(B_OPERATOR)) // the user hasnt operator privileges
+		// 	return sendData(fd, ERR_CHANOPRIVSNEEDED(_serverName, "Channel"));
+		// if (/*there is no user with the provided nick*/)
+		// 	return sendData(fd, ERR_NOSUCHNICK(_serverName, "provided nick"));
+		// if (/*The given mode is not known*/)
+		// 	return sendData(fd, ERR_UNKNOWNMODE(_serverName, "Char", "Channel"));
+		// if (/*Channel key is already set*/)
+		// 	return sendData(fd, ERR_KEYSET(_serverName, "Channel"));
 	}
 	else // User MODE
 	{
@@ -42,8 +50,14 @@ void Server::MODE(int fd, std::vector<std::string> params)
 			return sendData(fd, ERR_USERSDONTMATCH(_serverName));
 		if (params.size() < 3)
 			return sendData(fd, RPL_UMODEIS(_serverName, flagsToString(_users[fd].getFlags())));
-		if (/*The given mode is not known*/) // needs string to flag converter util
+		if (std::strchr(USR_MODESET, params[2][1])) // needs string to flag converter util
 			return sendData(fd, ERR_UMODEUNKNOWNFLAG(_serverName));
+		if (params[2][0] == '+')
+			user->setFlag(switchToUserMode(params[2][1]));
+		else if (params[2][0] == '+')
+			user->unsetFlag(switchToUserMode(params[2][1]));
+		// Take care of case no matching flag (default)!
+		// Take care of case o+ (users need to use cmd OPER)!
 	}
 	// for (size_t i = 0; i < params.size(); i++)
 	// 	std::cout << params[i] << std::endl;

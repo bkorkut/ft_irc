@@ -6,12 +6,12 @@
 // Converts string toLower
 std::string	toLower(std::string str)
 {
-	for(std::string::iterator c = str.begin(); c != str.end(); c++)
+	for (std::string::iterator c = str.begin(); c != str.end(); c++)
 		*c = std::tolower(*c);
 	return str;
 }
 
-std::string	flagsToString(uint16_t flags)
+std::string	channelFlagsToString(uint16_t flags)
 {
 	std::string ret;
 	if (flags & B_ANONYMOUS)
@@ -39,7 +39,7 @@ std::string	flagsToString(uint16_t flags)
 	return ret;
 }
 
-std::string	flagsToString(uint8_t flags)
+std::string	userFlagsToString(uint8_t flags)
 {
 	std::string ret;
 	if (flags & B_INVISIBLE)
@@ -55,6 +55,33 @@ std::string	flagsToString(uint8_t flags)
 	if (flags & B_RESTRICTED)
 		ret += RESTRICTED;
 	return ret;
+}
+
+UserFlags switchToUserMode(char c)
+{
+	switch (c)
+	{
+		case INVISIBLE:
+			return B_INVISIBLE;
+			break ;
+		case SERVNOTICE:
+			return B_SERVNOTICE;
+			break ;
+		case WALLOPS:
+			return B_WALLOPS;
+			break ;
+		case OPERATOR:
+			return B_OPERATOR;
+			break ;
+		case AWAY:
+			return B_AWAY;
+			break ;
+		case RESTRICTED:
+			return B_RESTRICTED;
+			break ;
+		default:
+			break ;
+	}
 }
 
 // Return a pointer to a User if there is a match, NULL if not
