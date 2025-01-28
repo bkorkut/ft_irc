@@ -1,5 +1,5 @@
 #ifndef USER_HPP
-# define USER_HPP
+#define USER_HPP
 
 # include <string>
 # include <cstdint>
@@ -26,41 +26,42 @@ enum	UserFlags
 
 class User {
 private:
-	const int	id;
-	std::string	nick;
-	std::string	username;
-	std::string	realname;
-	std::string	password;
-	bool		isAuthenticated;
-	bool		isRegistered;
-	uint8_t		modeFlags;
+    const int   id;
+    std::string nick;
+    std::string username;
+    std::string realname;
+    std::string password;
+    bool        isAuthenticated;
+    bool        isRegistered;
+    uint8_t     modeFlags;
+
 public:
-	std::string	buffer;
-	// Constructors - sadece deklarasyon
-	User(void);
-	User(int fd);
+    std::string buffer;
 
-	// Getters
-	const std::string&	getNick() const;
-	const std::string&	getUsername() const;
-	const std::string&	getRealname() const;
-	bool				getIsAuthenticated() const;
-	bool				getIsRegistered() const;
-	int					getId() const;
-	uint8_t				getFlags(UserFlags flag);
-	bool				hasFlag(UserFlags flag);
+    User(void);
+    User(int fd);
 
-	// Setters
-	void				setNick(std::string newNick);
-	void				setUsername(std::string newUsername);
-	void				setRealname(std::string newRealname);
-	void				setPassword(std::string newPassword);
-	void				setFlag(UserFlags flag);
-	void				unsetFlag(UserFlags flag);
+    // Getters
+    const std::string&  getNick() const;
+    const std::string&  getUsername() const;
+    const std::string&  getRealname() const;
+    bool               getIsAuthenticated() const;
+    bool               getIsRegistered() const;
+    int                getId() const;
+    uint8_t            getFlags(UserFlags flag);
+    bool               hasFlag(UserFlags flag);
 
-	// Authentication methods
-	bool				authenticate(const std::string& serverPassword);
-	bool				checkRegistration();
+    // Setters
+    void               setNick(std::string newNick);
+    void               setUsername(std::string newUsername);
+    void               setRealname(std::string newRealname);
+    void               setPassword(std::string newPassword);
+    void               setFlag(UserFlags flag);
+    void               unsetFlag(UserFlags flag);
+
+    // Authentication methods
+    bool               authenticate(const std::string& serverPassword);
+    bool               checkRegistration();
 };
 
 #endif

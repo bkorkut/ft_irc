@@ -4,6 +4,9 @@
 # include <sys/types.h>
 # include <sys/socket.h>
 # include <netinet/in.h>
+# include <sys/types.h>
+# include <sys/socket.h>
+# include <netinet/in.h>
 # include <iostream>
 # include <stdexcept>
 # include <string>
@@ -18,6 +21,7 @@
 # include "Command.hpp"
 
 # define NICKSET "abcdefghiklmnoprstuvwxyz1234567890[]{}|\\"
+# define SERVER_NAME "ft_irc"
 # define SERVER_NAME "ft_irc"
 
 class Server

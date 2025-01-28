@@ -1,38 +1,31 @@
-#include <sstream>
-#include <vector>
-#include <iostream>
 #include "../Server.hpp"
 
-// Direct Client-to-Client (DDC) file transfer comes here too
-// Parameters: <target>{,<target>} <text to be sent>
-void	Server::PRIVMSG(int fd, std::vector<std::string> params)
-{
-	// NEEDS CHANGE AFTER VECTOR SPLIT
-	// if (params.size() > 3)
-	// 	;
-	std::cout << "Command from user: " << this->_users[fd].getNick() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params[i] << std::endl;
-	// std::istringstream	stream(params);
-	// std::string					message;
-	// std::string					targets;
-	// std::vector<std::string>	target;
+void Server::PRIVMSG(int fd, std::vector<std::string> params) {
+    if (params.size() < 3)
+        return sendData(fd, ERR_NEEDMOREPARAMS(_users[fd].getNick(), "PRIVMSG"));
 
-	// stream >> targets;
-	// std::getline(stream >> std::ws, message);
-	// if (!message.empty() && message[0] == ':')
-	// 	message.erase(0, 1);
-	// stream.clear();
-	// stream.str(targets);
-	// while (stream.good())
-	// {
-	// 	std::getline(stream, targets, ',');
-	// 	target.push_back(targets);
-	// }
+    std::string target = params[1];
+    std::string message = params[2];
+    std::string prefix = _users[fd].getNick() + "!" + _users[fd].getUsername() + "@" + _serverName;
 
-	// std::cout << "in function privmsg" << std::endl;
-	// for(size_t i = 0; i < target.size(); i++)
-	// 	std::cout << target[i] << std::endl;
-	// // find and send message to clients here
-	// std::cout << message << std::endl;
+    // Kanal mesajı
+    if (target[0] == '#') {
+        std::map<std::string, Channel>::iterator channel = _channels.find(target);
+        if (channel == _channels.end())
+            return sendData(fd, ERR_NOSUCHCHANNEL(_users[fd].getNick(), target));
+
+        // Kullanıcı kanalda mı kontrol et
+        if (!channel->second.hasUser(fd))
+            return sendData(fd, ERR_NOTONCHANNEL(_users[fd].getNick(), target));
+
+        // Kanaldaki tüm kullanıcılara mesajı gönder (gönderen hariç)
+        const std::map<int, User*>& users = channel->second.getUsers();
+        std::string fullMessage = ":" + prefix + " PRIVMSG " + target + " :" + message + "\r\n";
+
+        for (std::map<int, User*>::const_iterator it = users.begin(); it != users.end(); ++it) {
+            if (it->first != fd) { // Gönderen hariç herkese
+                sendData(it->first, fullMessage);
+            }
+        }
+    }
 }

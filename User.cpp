@@ -1,8 +1,9 @@
 #include "User.hpp"
+#include "iostream"
 
 User::User(void) : id(-1), isAuthenticated(false), isRegistered(false) {}
 
-User::User(int fd) : id(fd), /*registered(false), pass(false), user(false), nick(false),*/ isAuthenticated(false), isRegistered(false) {}
+User::User(int fd) : id(fd), isAuthenticated(false), isRegistered(false) {}
 
 const std::string& User::getNick() const {
     return nick;
@@ -28,14 +29,6 @@ int User::getId() const {
     return id;
 }
 
-uint8_t User::getFlags(UserFlags flag){
-    return modeFlags;
-}
-
-bool User::hasFlag(UserFlags flag){
-    return modeFlags & flag;
-}
-
 void User::setNick(std::string newNick) {
     nick = newNick;
 }
@@ -52,14 +45,6 @@ void User::setPassword(std::string newPassword) {
     password = newPassword;
 }
 
-void User::setFlag(UserFlags flag){
-    modeFlags |= flag;
-}
-
-void User::unsetFlag(UserFlags flag){
-    modeFlags &= ~flag;
-}
-
 bool User::authenticate(const std::string& serverPassword) {
     if (password == serverPassword) {
         isAuthenticated = true;
@@ -69,9 +54,17 @@ bool User::authenticate(const std::string& serverPassword) {
 }
 
 bool User::checkRegistration() {
+    std::cout << "Debug: Checking registration..." << std::endl;
+    std::cout << "Nick: " << (nick.empty() ? "empty" : nick) << std::endl;
+    std::cout << "Username: " << (username.empty() ? "empty" : username) << std::endl;
+    std::cout << "Realname: " << (realname.empty() ? "empty" : realname) << std::endl;
+    std::cout << "IsAuthenticated: " << (isAuthenticated ? "yes" : "no") << std::endl;
+
     if (!nick.empty() && !username.empty() && !realname.empty() && isAuthenticated) {
         isRegistered = true;
+        std::cout << "Debug: Registration successful" << std::endl;
         return true;
     }
+    std::cout << "Debug: Registration failed" << std::endl;
     return false;
 }

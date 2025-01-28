@@ -7,7 +7,7 @@
 // <channel> {[+|-]|o|p|s|i|t|n|b|v} [<limit>] [<user>] [<ban mask>]
 // User mode parameters:
 // <nickname> {[+|-]|i|w|s|o}
-void	Server::MODE(int fd, std::vector<std::string> params)
+void Server::MODE(int fd, std::vector<std::string> params)
 {
 	std::cout << "\033[32m[MODE Command]\033[0m" << std::endl;
 	if (params.size() < 2)

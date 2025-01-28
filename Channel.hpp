@@ -43,11 +43,11 @@ enum	ChannelFlags
 
 class Channel {
 private:
-	std::string name;
-	std::map<int, bool>		operators; // fd -> is_operator
-	std::map<int, User &>	users;	// fd -> User pointer
-	std::string				topic;
+    std::string name;
+    std::map<int, bool> operators;  // fd -> is_operator
+    std::map<int, User &> users;     // fd -> User pointer
 	uint16_t				modeFlags;
+    std::string topic;
 
 public:
 	// Constructors
@@ -62,14 +62,23 @@ public:
 
 	// Channel management
 	void addUser(User* user, bool isOperator = false);
+        bool hasUser(int fd) const {
+        return users.find(fd) != users.end();
+    }
 	void removeUser(int fd);
 	bool isOperator(int fd) const;
 
-	// Getters
-	const std::string& getName() const { return name; }
-	const std::map<int, User*>& getUsers() const { return users; }
-	const std::string& getTopic() const { return topic; }
-	void setName(const std::string& channelName) { name = channelName; }
+    void setOperator(int fd, bool status) {
+        if (users.find(fd) != users.end()) {
+            operators[fd] = status;
+        }
+    }
+
+    const std::string& getName() const { return name; }
+    const std::map<int, User*>& getUsers() const { return users; }
+    const std::string& getTopic() const { return topic; }
+    void setTopic(const std::string& newTopic) { topic = newTopic; }
+    void setName(const std::string& channelName) { name = channelName; }
 
 	// Generate user list with prefixes
 	std::string getUserList() const;
