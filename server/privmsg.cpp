@@ -2,7 +2,7 @@
 
 void Server::PRIVMSG(int fd, std::vector<std::string> params) {
     if (params.size() < 3)
-        return sendData(fd, ERR_NEEDMOREPARAMS(_users[fd].getNick(), "PRIVMSG"));
+        return sendData(fd, ERR_NEEDMOREPARAMS(std::string("PRIVMSG")));
 
     std::string target = params[1];
     std::string message = params[2];

@@ -55,7 +55,8 @@ class errorException : public std::exception{
 		std::string message;
 	public:
 		errorException(std::string msg) : message(msg) {}
-		const const char *what() const throw() {
+		~errorException() throw() {}
+		const char *what() const throw() {
 			return message.c_str();
 		}
 };

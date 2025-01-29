@@ -2,7 +2,6 @@
 #define CHANNEL_HPP
 
 #include <map>
-#include <string>
 #include "User.hpp"
 
 typedef unsigned char uint8_t;  // C++98 uyumlu tanım
@@ -19,18 +18,19 @@ enum ChannelModes
 enum	ChannelFlags
 {
 	B_INVONLY	= 1 << 0,	// (00000001)
-	B_MODERATED	= 1 << 1,	// (00000010)
+	B_PASSKEY	= 1 << 1,	// (00000010)
 	B_CHTOPIC	= 1 << 2,	// (00000100)
 	B_LIMIT		= 1 << 3,	// (00001000)
 };
 
 class Channel {
 private:
-	std::string name;
+	std::string				name;
+	std::string				topic;
+	std::string				password;
 	std::map<int, bool>		operators;	// fd -> is_operator
 	std::map<int, User *>	users;		// fd -> User pointer
 	uint8_t					modeFlags;
-	std::string topic;
 
 public:
 	// Constructors
@@ -48,7 +48,7 @@ public:
 
 	// Channel management
 	void addUser(User* user, bool isOperator = false);
-		bool hasUser(int fd) const {
+	bool hasUser(int fd) const {
 		return users.find(fd) != users.end();
 	}
 	void removeUser(int fd);

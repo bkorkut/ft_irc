@@ -2,9 +2,9 @@
 
 void Server::JOIN(int fd, std::vector<std::string> parameters) {
     std::cout << "\033[32m[JOIN Command]\033[0m" << std::endl;
-    
+
     if (parameters.size() < 2)
-        return sendData(fd, ERR_NEEDMOREPARAMS(_users[fd].getNick(), "JOIN"));
+        return sendData(fd, ERR_NEEDMOREPARAMS(std::string("JOIN")));
 
     std::string channelName = parameters[1];
     if (channelName[0] != '#')
@@ -38,7 +38,7 @@ void Server::JOIN(int fd, std::vector<std::string> parameters) {
     // JOIN mesajını kanaldaki tüm kullanıcılara gönder
     std::string prefix = user->getNick() + "!" + user->getUsername() + "@" + _serverName;
     std::string joinMsg = ":" + prefix + " JOIN " + channelName + "\r\n";
-    
+
     const std::map<int, User*>& channelUsers = channelIt->second.getUsers();
     for (std::map<int, User*>::const_iterator it = channelUsers.begin(); it != channelUsers.end(); ++it) {
         sendData(it->first, joinMsg);
@@ -55,11 +55,11 @@ void Server::JOIN(int fd, std::vector<std::string> parameters) {
     // NAMES listesini gönder
     std::string userList = channelIt->second.getUserList();
     std::cout << "Debug: Sending NAMES list: " << userList << std::endl;
-    
+
     // IRC protokolüne uygun NAMES yanıtı
     std::string namesReply = ":" + _serverName + " 353 " + user->getNick() + " = " + channelName + " :" + userList + "\r\n";
     std::string namesEnd = ":" + _serverName + " 366 " + user->getNick() + " " + channelName + " :End of /NAMES list.\r\n";
-    
+
     sendData(fd, namesReply);
     sendData(fd, namesEnd);
 

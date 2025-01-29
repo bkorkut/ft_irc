@@ -7,7 +7,7 @@ void Server::KICK(int fd, std::vector<std::string> params) {
     std::cout << "\033[32m[KICK Command]\033[0m" << std::endl;
 
     if (params.size() < 3)
-        return sendData(fd, ERR_NEEDMOREPARAMS(_users[fd].getNick(), "KICK"));
+        return sendData(fd, ERR_NEEDMOREPARAMS(std::string("KICK")));
 
     std::string channelName = params[1];
     std::string targetNick;
@@ -88,6 +88,6 @@ void Server::KICK(int fd, std::vector<std::string> params) {
 
     // Kullanıcıyı kanaldan çıkar
     channelIt->second.removeUser(targetFd);
-    
+
     std::cout << "Debug: KICK command completed successfully" << std::endl;
 }

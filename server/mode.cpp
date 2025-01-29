@@ -21,7 +21,7 @@ static t_mode createMode(int *parcount, bool sign, char mode, std::vector<std::s
 		throw ERR_NEEDMOREPARAMS(std::string("MODE"));
 	t_mode ret(sign, mode, *param);
 	param++;
-	*(parcount++);
+	(*parcount)++;
 	return ret;
 }
 
@@ -72,8 +72,10 @@ static void executeMode(Channel *channel, t_mode mode)
 			break ;
 			// fall through
 		case LIMIT:
+			mode.sign ? channel->setFlag(mode.mode) : channel->unsetFlag(mode.mode);
 			// fall through
 		case PASSKEY:
+			mode.sign ? channel->setFlag(mode.mode) : channel->unsetFlag(mode.mode);
 			// fall through
 		case CHANOP:
 			break ;
@@ -96,7 +98,7 @@ void Server::MODE(int fd, std::vector<std::string> params)
 	std::map<std::string, Channel>::iterator channel = _channels.find(params[1]);
 	if (channel == _channels.end())
 		return sendData(fd, ERR_NOSUCHCHANNEL(_serverName, "Channel"));
-	if () // - the user is not a chanop
+	if (false) // - the user is not a chanop
 		return sendData(fd, ERR_CHANOPRIVSNEEDED(_serverName, "Channel"));
 	try
 	{

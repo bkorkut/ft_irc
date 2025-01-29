@@ -14,24 +14,8 @@ std::string	toLower(std::string str)
 std::string	channelFlagsToString(uint8_t flags)
 {
 	std::string ret;
-	if (flags & B_ANONYMOUS)
-		ret += ANONYMOUS;
 	if (flags & B_INVONLY)
 		ret += INVONLY;
-	if (flags & B_MODERATED)
-		ret += MODERATED;
-	if (flags & B_NOOUTMSG)
-		ret += NOOUTMSG;
-	if (flags & B_QUIET)
-		ret += QUIET;
-	if (flags & B_PRIVATE)
-		ret += PRIVATE;
-	if (flags & B_SECRET)
-		ret += SECRET;
-	if (flags & B_REOP)
-		ret += REOP;
-	if (flags & B_TOPIC)
-		ret += TOPIC;
 	if (flags & B_LIMIT)
 		ret += LIMIT;
 	if (flags & B_PASSKEY)
