@@ -50,6 +50,16 @@
 # define RPL_PART(prefix, channel, message)				":" + prefix + " PART " + channel + " :" + message + "\r\n"												//Bir kullanıcının bir kanaldan ayrıldığını belirtir.
 # define RPL_QUIT(source, message)						" :" + source + " QUIT :Quit: " + message + "\r\n"														//Bir kullanıcının sunucudan ayrıldığını bildirir.
 
+class errorException : public std::exception{
+	private:
+		std::string message;
+	public:
+		errorException(std::string msg) : message(msg) {}
+		const const char *what() const throw() {
+			return message.c_str();
+		}
+};
+
 std::string	toLower(std::string str);
 std::string	channelFlagsToString(uint16_t flags);
 std::string	userFlagsToString(uint8_t flags);
