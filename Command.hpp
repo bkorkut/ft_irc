@@ -63,8 +63,6 @@ class errorException : public std::exception{
 std::string	toLower(std::string str);
 std::string	channelFlagsToString(uint16_t flags);
 std::string	userFlagsToString(uint8_t flags);
-ChannelFlags switchToChannelMode(char c);
-UserFlags	switchToUserMode(char c);
 User		*findUserWithNick(std::map<int, User> &users, std::string nick);
 std::vector<std::string>	vecSplit(std::string toSplit, std::string septor);
 

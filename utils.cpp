@@ -11,7 +11,7 @@ std::string	toLower(std::string str)
 	return str;
 }
 
-std::string	channelFlagsToString(uint16_t flags)
+std::string	channelFlagsToString(uint8_t flags)
 {
 	std::string ret;
 	if (flags & B_ANONYMOUS)
@@ -36,24 +36,6 @@ std::string	channelFlagsToString(uint16_t flags)
 		ret += LIMIT;
 	if (flags & B_PASSKEY)
 		ret += PASSKEY;
-	return ret;
-}
-
-std::string	userFlagsToString(uint8_t flags)
-{
-	std::string ret;
-	if (flags & B_INVISIBLE)
-		ret += INVISIBLE;
-	if (flags & B_SERVNOTICE)
-		ret += SERVNOTICE;
-	if (flags & B_WALLOPS)
-		ret += WALLOPS;
-	if (flags & B_OPERATOR)
-		ret += OPERATOR;
-	if (flags & B_AWAY)
-		ret += AWAY;
-	if (flags & B_RESTRICTED)
-		ret += RESTRICTED;
 	return ret;
 }
 
