@@ -5,7 +5,7 @@
 
 void Server::USER(int fd, std::vector<std::string> params) {
     std::cout << "\033[32m[USER Command]\033[0m" << std::endl;
-    
+
     // Kullanıcı komutunun format kontrolü
     if (params.size() < 5) {
         std::cout << "Debug: Not enough parameters. Expected: USER <username> <hostname> <servername> :<realname>" << std::endl;
@@ -13,12 +13,12 @@ void Server::USER(int fd, std::vector<std::string> params) {
         for (size_t i = 0; i < params.size(); i++) {
             std::cout << "Param[" << i << "]: " << params[i] << std::endl;
         }
-        return sendData(fd, ERR_NEEDMOREPARAMS(_users[fd].getNick(), "USER"));
+        return sendData(fd, ERR_NEEDMOREPARAMS(std::string("USER")));
     }
-    
+
     if (_users[fd].getIsRegistered()) {
         std::cout << "Debug: User already registered" << std::endl;
-        return sendData(fd, ERR_ALREADYREGISTERED(_users[fd].getNick()));
+        return sendData(fd, ERR_ALREADYREGISTERED);
     }
 
     std::cout << "Debug: Setting username and realname" << std::endl;

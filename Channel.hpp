@@ -15,7 +15,7 @@ enum ChannelModes
 	PRIVATE		= 'p',
 	SECRET		= 's',
 	REOP		= 'r',
-	TOPIC		= 't',
+	CHTOPIC		= 't',
 	LIMIT		= 'l',
 	PASSKEY		= 'k',
 	CREATOR		= 'O',
@@ -36,9 +36,9 @@ enum	ChannelFlags
 	B_PRIVATE	= 1 << 5,	// (00000000 00100000)
 	B_SECRET	= 1 << 6,	// (00000000 01000000)
 	B_REOP		= 1 << 7,	// (00000000 10000000)
-	B_TOPIC		= 1 << 8,	// (00000001 00000000)
+	B_CHTOPIC	= 1 << 8,	// (00000001 00000000)
 	B_LIMIT		= 1 << 9,	// (00000010 00000000)
-	B_PASSKEY	= 1 << 10	// (00000100 00000000)
+	B_PASSKEY	= 1 << 10,	// (00000100 00000000)
 };
 
 class Channel {
@@ -55,10 +55,13 @@ public:
 	Channel(const std::string& channelName) : name(channelName) {}
 
 	// Flag management
-	uint16_t			getFlags(ChannelFlags flag);
+	uint16_t			getFlags(void);
 	bool				hasFlag(ChannelFlags flag);
+	bool				hasFlag(char flag);
 	void				setFlag(ChannelFlags flag);
+	void				setFlag(char flag);
 	void				unsetFlag(ChannelFlags flag);
+	void				unsetFlag(char flag);
 
 	// Channel management
 	void addUser(User* user, bool isOperator = false);

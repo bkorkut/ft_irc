@@ -16,30 +16,61 @@ void Server::MODE(int fd, std::vector<std::string> params)
 	{
 		if (params.size() < 3)
 			return sendData(fd, ERR_NEEDMOREPARAMS(std::string("MODE")));
-		if (params.size() < 4 /*and is a no parameter taking flag command*/)
+		std::map<std::string, Channel>::iterator channel = _channels.find(params[1]);
+		if (channel == _channels.end())
+			return sendData(fd, ERR_NOSUCHCHANNEL(_serverName, "Channel"));
+		User *user = &_users.find(fd)->second;
+		if (!user->hasFlag(B_OPERATOR)) // ADD: || the user is not a chanop!!
+			return sendData(fd, ERR_CHANOPRIVSNEEDED(_serverName, "Channel"));
+		std::vector<std::string>::iterator pit = params.begin();
+		std::advance(pit, 2);
+		for (; pit != params.end(); ++pit)
 		{
-			// channel flags
+			std::string &modes = *pit;
+			std::string::iterator sit = modes.begin();
+			bool	sign;
+			bool	flag = false;
+			for (; sit != modes.end(); ++sit)
+			{
+				if (*sit == '+' || *sit == '-')
+				{
+					if (flag)
+						return sendData(fd, ERR_NEEDMOREPARAMS(std::string("MODE")));
+					sign = (*sit == '+');
+					flag = true;
+				}
+				else if (flag)
+				{
+					if (!std::strchr(CH_MODESET, *sit))
+						return sendData(fd, ERR_UNKNOWNMODE(_serverName, "Char", "Channel"));
+					else if (*sit == ANONYMOUS)
+						sign ? channel->second.setFlag(*sit) : channel->second.unsetFlag(*sit);
+					else if (*sit == INVONLY)
+						sign ? channel->second.setFlag(*sit) : channel->second.unsetFlag(*sit);
+					else if (*sit == MODERATED)
+						sign ? channel->second.setFlag(*sit) : channel->second.unsetFlag(*sit);
+					else if (*sit == NOOUTMSG)
+						sign ? channel->second.setFlag(*sit) : channel->second.unsetFlag(*sit);
+					// else if (*sit == 'q') // FOR SERVER USE ONLY??
+					// 	sign ? channel->second.setFlag(*sit) : channel->second.unsetFlag(*sit);
+					else if (*sit == PRIVATE)
+						sign && !channel->second.hasFlag(SECRET) ? channel->second.setFlag(*sit) : channel->second.unsetFlag(*sit);
+					else if (*sit == SECRET)
+						sign && !channel->second.hasFlag(PRIVATE) ? channel->second.setFlag(*sit) : channel->second.unsetFlag(*sit);
+					else if (*sit == REOP)
+					{
+						if (channel->second.getName()[0] != '!')
+							return sendData(fd, ERR_UNKNOWNMODE(_serverName, "Char", "Channel"));
+						sign ? channel->second.setFlag(*sit) : channel->second.unsetFlag(*sit);
+					}
+					else if (*sit == CHTOPIC)
+						sign ? channel->second.setFlag(*sit) : channel->second.unsetFlag(*sit);
+					// the remaining channel modes
+				}
+				else
+					return sendData(fd, ERR_NEEDMOREPARAMS(std::string("MODE")));
+			}
 		}
-		else if (/*check if its a nick taking command*/)
-		{
-			// Member status modes
-		}
-		else if (/*check if its a mask taking command*/)
-		{
-			// channel access control
-		}
-		// if (/*The given channel is unknown*/)
-		// 	return sendData(fd, ERR_NOSUCHCHANNEL(_serverName, "Channel"));
-		// if (/*User not on channel*/)
-		// 	return sendData(fd, ERR_NOTONCHANNEL(_serverName, "Channel"));
-		// if (_users.find(fd)->second.hasFlag(B_OPERATOR)) // the user hasnt operator privileges
-		// 	return sendData(fd, ERR_CHANOPRIVSNEEDED(_serverName, "Channel"));
-		// if (/*there is no user with the provided nick*/)
-		// 	return sendData(fd, ERR_NOSUCHNICK(_serverName, "provided nick"));
-		// if (/*The given mode is not known*/)
-		// 	return sendData(fd, ERR_UNKNOWNMODE(_serverName, "Char", "Channel"));
-		// if (/*Channel key is already set*/)
-		// 	return sendData(fd, ERR_KEYSET(_serverName, "Channel"));
 	}
 	else // User MODE
 	{
@@ -49,16 +80,24 @@ void Server::MODE(int fd, std::vector<std::string> params)
 		if (_users[fd].getNick() != user->getNick())
 			return sendData(fd, ERR_USERSDONTMATCH(_serverName));
 		if (params.size() < 3)
-			return sendData(fd, RPL_UMODEIS(_serverName, flagsToString(_users[fd].getFlags())));
-		if (std::strchr(USR_MODESET, params[2][1])) // needs string to flag converter util
+			return sendData(fd, RPL_UMODEIS(_serverName, userFlagsToString(_users[fd].getFlags())));
+		if (!std::strchr(USR_MODESET, params[2][1])) // needs string to flag converter util
 			return sendData(fd, ERR_UMODEUNKNOWNFLAG(_serverName));
 		if (params[2][0] == '+')
 			user->setFlag(switchToUserMode(params[2][1]));
-		else if (params[2][0] == '+')
+		else if (params[2][0] == '-')
 			user->unsetFlag(switchToUserMode(params[2][1]));
 		// Take care of case no matching flag (default)!
 		// Take care of case o+ (users need to use cmd OPER)!
+		// Take care of multiple commands!!
 	}
-	// for (size_t i = 0; i < params.size(); i++)
-	// 	std::cout << params[i] << std::endl;
 }
+
+		// e.g.: MODE #Finnish +imIbe *!*@*.fi user!*@* spamword -k secret
+		// }
+		// if (/*User not on channel*/)
+		// 	return sendData(fd, ERR_NOTONCHANNEL(_serverName, "Channel"));
+		// if (/*there is no user with the provided nick*/)
+		// 	return sendData(fd, ERR_NOSUCHNICK(_serverName, "provided nick"));
+		// if (/*Channel key is already set*/)
+		// 	return sendData(fd, ERR_KEYSET(_serverName, "Channel"));

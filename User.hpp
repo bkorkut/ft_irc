@@ -23,7 +23,7 @@ enum	UserFlags
 	B_WALLOPS		= 1 << 2,	// (00000100) user receives wallops
 	B_OPERATOR		= 1 << 3,	// (00001000) operator flag
 	B_AWAY			= 1 << 4,	// (00010000) user is flagged as away
-	B_RESTRICTED	= 1 << 5	// (00100000) restricted user connection
+	B_RESTRICTED	= 1 << 5,	// (00100000) restricted user connection
 };
 
 class User {
@@ -50,8 +50,9 @@ public:
     bool               getIsAuthenticated() const;
     bool               getIsRegistered() const;
     int                getId() const;
-    uint8_t            getFlags(UserFlags flag);
+    uint8_t            getFlags(void);
     bool               hasFlag(UserFlags flag);
+    bool               hasFlag(char flag);
 
     // Setters
     void               setNick(std::string newNick);
@@ -59,7 +60,9 @@ public:
     void               setRealname(std::string newRealname);
     void               setPassword(std::string newPassword);
     void               setFlag(UserFlags flag);
+    void               setFlag(char flag);
     void               unsetFlag(UserFlags flag);
+    void               unsetFlag(char flag);
 
     // Authentication methods
     bool               authenticate(const std::string& serverPassword);
