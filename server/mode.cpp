@@ -4,21 +4,24 @@
 #include "../Server.hpp"
 
 typedef struct s_mode{
-	char		mode;
 	bool		sign;
+	char		mode;
 	std::string	param;
 
-	s_mode(char m, bool s, std::string p) : mode(m), sign(s), param(p) {}
+	s_mode(bool s, char m, std::string p) : sign(s), mode(m), param(p) {}
 }		t_mode;
 
 static t_mode createMode(int *parcount, bool sign, char mode, std::vector<std::string>::iterator &param, bool end)
 {
 	// else if (mode == 'q') // FOR SERVER USE ONLY??
 	// 	sign ? channel->setFlag(mode) : channel->unsetFlag(mode);
-	if (mode == INVONLY || mode == CHTOPIC)
-		return t_mode(sign, mode, NULL);
+	std::cout << "Debug: mode is " << mode << std::endl;
+	if (mode == INVONLY || mode == CHTOPIC || (!sign && mode != CHANOP))
+		return t_mode(sign, mode, "");
+	std::cout << "Debug: passes the return" << std::endl;
 	if (end)
-		throw ERR_NEEDMOREPARAMS(std::string("MODE"));
+		throw errorException(ERR_NEEDMOREPARAMS(std::string("MODE")));
+	std::cout << "Debug: passes the throw" << std::endl;
 	t_mode ret(sign, mode, *param);
 	param++;
 	(*parcount)++;
@@ -31,8 +34,9 @@ static std::vector<t_mode> parseModes(Channel *channel, std::vector<std::string>
 	std::vector<std::string>::iterator pit = params.begin();
 	std::advance(pit, 2);
 	int	parcount = 0;
-	for (; pit != params.end(); ++pit)
+	for (; pit != params.end();)
 	{
+		std::cout << "Debug: pit is " << *pit << std::endl;
 		std::string &modes = *pit;
 		std::string::iterator sit = modes.begin();
 		bool	sign;
@@ -64,30 +68,30 @@ static std::vector<t_mode> parseModes(Channel *channel, std::vector<std::string>
 
 static void executeMode(Channel *channel, t_mode mode)
 {
-	switch (mode.mode){
-		case INVONLY:
-			// fall through
-		case CHTOPIC:
-			mode.sign ? channel->setFlag(mode.mode) : channel->unsetFlag(mode.mode);
-			break ;
-			// fall through
-		case LIMIT:
-			mode.sign ? channel->setFlag(mode.mode) : channel->unsetFlag(mode.mode);
-			// fall through
-		case PASSKEY:
-			mode.sign ? channel->setFlag(mode.mode) : channel->unsetFlag(mode.mode);
-			// fall through
-		case CHANOP:
-			break ;
-		default:
-			throw errorException(ERR_UNKNOWNMODE(std::string(SERVER_NAME), mode.mode, channel->getName()));
-	}
+	std::cout << "sign:" << mode.sign << " mode: " << mode.mode << " param: " << mode.param << std::endl;
+	channel->getName();
+	// switch (mode.mode){
+	// 	case INVONLY:
+	// 		// fall through
+	// 	case CHTOPIC:
+	// 		mode.sign ? channel->setFlag(mode.mode) : channel->unsetFlag(mode.mode);
+	// 		break ;
+	// 		// fall through
+	// 	case LIMIT:
+	// 		mode.sign ? channel->setFlag(mode.mode) : channel->unsetFlag(mode.mode);
+	// 		// fall through
+	// 	case PASSKEY:
+	// 		mode.sign ? channel->setFlag(mode.mode) : channel->unsetFlag(mode.mode);
+	// 		// fall through
+	// 	case CHANOP:
+	// 		break ;
+	// 	default:
+	// 		throw errorException(ERR_UNKNOWNMODE(std::string(SERVER_NAME), mode.mode, channel->getName()));
+	// }
 }
 
 // Channel mode parameters:
-// <channel> {[+|-]|o|p|s|i|t|n|b|v} [<limit>] [<user>] [<ban mask>]
-// User mode parameters:
-// <nickname> {[+|-]|i|w|s|o}
+// <channel> {[+|-]|i|t|k|o|l} [<limit>] [<user>]
 void Server::MODE(int fd, std::vector<std::string> params)
 {
 	std::cout << "\033[32m[MODE Command]\033[0m" << std::endl;
@@ -108,6 +112,7 @@ void Server::MODE(int fd, std::vector<std::string> params)
 	}
 	catch(const std::exception& e)
 	{
+		std::cout << "Catched: " << e.what() << std::endl;
 		return sendData(fd, e.what());
 	}
 }

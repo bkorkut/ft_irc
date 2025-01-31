@@ -10,9 +10,9 @@ enum ChannelModes
 {
 	INVONLY		= 'i',
 	CHTOPIC		= 't',
-	LIMIT		= 'l',
 	PASSKEY		= 'k',
 	CHANOP		= 'o',
+	LIMIT		= 'l',
 };
 
 enum	ChannelFlags
