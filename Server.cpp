@@ -79,6 +79,7 @@ void Server::recieveData(int fd) {
     }
     else if (bytes > 0) {
         buf[bytes] = '\0';
+        std::cout << "Recieved: " << buf << std::endl;
         this->commandParser(fd, buf);
     }
 }
@@ -148,7 +149,7 @@ void Server::commandParser(int fd, std::string input) {
     }
     else
         _users.find(fd)->second.buffer.clear();
-    
+
     for (size_t i = 0; i < commands.size(); i++) {
         size_t pos = commands[i].find(" :");
         if (pos != std::string::npos) {

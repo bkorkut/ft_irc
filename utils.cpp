@@ -44,7 +44,10 @@ std::vector<std::string>	vecSplit(std::string toSplit, std::string septor)
 	{
 		foundPos = toSplit.find(septor, pos);
 		if (foundPos != std::string::npos)
-			retval.push_back(toSplit.substr(pos, foundPos - pos));
+		{
+			if (foundPos > pos)
+				retval.push_back(toSplit.substr(pos, foundPos - pos));
+		}
 		else
 			retval.push_back(toSplit.substr(pos, toSplit.size()));
 		pos = foundPos + septor.size();

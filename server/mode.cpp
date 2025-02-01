@@ -13,15 +13,10 @@ typedef struct s_mode{
 
 static t_mode createMode(int *parcount, bool sign, char mode, std::vector<std::string>::iterator &param, bool end)
 {
-	// else if (mode == 'q') // FOR SERVER USE ONLY??
-	// 	sign ? channel->setFlag(mode) : channel->unsetFlag(mode);
-	std::cout << "Debug: mode is " << mode << std::endl;
 	if (mode == INVONLY || mode == CHTOPIC || (!sign && mode != CHANOP))
 		return t_mode(sign, mode, "");
-	std::cout << "Debug: passes the return" << std::endl;
 	if (end)
 		throw errorException(ERR_NEEDMOREPARAMS(std::string("MODE")));
-	std::cout << "Debug: passes the throw" << std::endl;
 	t_mode ret(sign, mode, *param);
 	param++;
 	(*parcount)++;
@@ -36,7 +31,6 @@ static std::vector<t_mode> parseModes(Channel *channel, std::vector<std::string>
 	int	parcount = 0;
 	for (; pit != params.end();)
 	{
-		std::cout << "Debug: pit is " << *pit << std::endl;
 		std::string &modes = *pit;
 		std::string::iterator sit = modes.begin();
 		bool	sign;
@@ -54,12 +48,12 @@ static std::vector<t_mode> parseModes(Channel *channel, std::vector<std::string>
 			else if (!flag)
 				throw errorException(ERR_NEEDMOREPARAMS(std::string("MODE")));
 			else if (!std::strchr(CH_MODESET, *sit))
-				throw errorException(ERR_UNKNOWNMODE(std::string(SERVER_NAME), *sit, channel->getName()));
+				throw errorException(ERR_UNKNOWNMODE(std::string(1, *sit), channel->getName()));
 			else
 			{
 				ret.push_back(createMode(&parcount, sign, *sit, pit, pit == params.end()));
 				if (parcount > 3)
-					throw errorException(ERR_UNKNOWNMODE(std::string(SERVER_NAME), *sit, channel->getName()));
+					throw errorException(ERR_UNKNOWNMODE(std::string(1, *sit), channel->getName()));
 			}
 		}
 	}
@@ -95,15 +89,22 @@ static void executeMode(Channel *channel, t_mode mode)
 void Server::MODE(int fd, std::vector<std::string> params)
 {
 	std::cout << "\033[32m[MODE Command]\033[0m" << std::endl;
-	if (params.size() < 3)
-			return sendData(fd, ERR_NEEDMOREPARAMS(std::string("MODE")));
+	for (size_t i = 0; i < params.size(); i++)
+		std::cout << params[i] << std::endl;
+	if (params.size() < 2)
+		return sendData(fd, ERR_NEEDMOREPARAMS(std::string("MODE")));
 	else if (!std::strchr("#&+!", params[1][0]))
-		return sendData(fd, ERR_NOSUCHCHANNEL(_serverName, "Channel"));
+		return sendData(fd, ERR_NOSUCHCHANNEL(_serverName, params[1]));
 	std::map<std::string, Channel>::iterator channel = _channels.find(params[1]);
 	if (channel == _channels.end())
-		return sendData(fd, ERR_NOSUCHCHANNEL(_serverName, "Channel"));
+		return sendData(fd, ERR_NOSUCHCHANNEL(_serverName, params[1]));
+	if (params.size() < 3)
+	{
+		std::cout << "Debug: three arguments" << std::endl;
+		return sendData(fd, RPL_CHANNELMODEIS(_users[fd].getNick(), params[1], "+l", "100"));
+	}
 	if (false) // - the user is not a chanop
-		return sendData(fd, ERR_CHANOPRIVSNEEDED(_serverName, "Channel"));
+		return sendData(fd, ERR_CHANOPRIVSNEEDED(_serverName, params[1]));
 	try
 	{
 		std::vector<t_mode> modes = parseModes(&channel->second, params);
@@ -124,3 +125,5 @@ void Server::MODE(int fd, std::vector<std::string> params)
 		// 	return sendData(fd, ERR_NOSUCHNICK(_serverName, "provided nick"));
 		// if (/*Channel key is already set*/)
 		// 	return sendData(fd, ERR_KEYSET(_serverName, "Channel"));
+
+// parser needs fix for spaces

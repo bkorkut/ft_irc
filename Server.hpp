@@ -21,8 +21,7 @@
 # include "Command.hpp"
 
 # define NICKSET "abcdefghiklmnoprstuvwxyz1234567890[]{}|\\"
-# define CH_MODESET "aimnqpsrtlkOovbeI"
-# define USR_MODESET "iswoar"
+# define CH_MODESET "itlko"
 # define SERVER_NAME "ft_irc"
 
 class Server
