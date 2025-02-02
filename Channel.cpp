@@ -1,4 +1,41 @@
+#include "Command.hpp"
 #include "Channel.hpp"
+
+// mode management
+int	Channel::getLimit(){
+	return (this->limit);
+}
+
+void	Channel::setLimit(int l){
+	this->limit = l;
+}
+
+std::string	Channel::getTopic(){
+	return (this->topic);
+}
+
+void	Channel::setTopic(std::string t){
+	this->topic = t;
+}
+
+std::string	Channel::getPassword(){
+	return (this->password);
+}
+
+void	Channel::setPassword(std::string p){
+	this->password = p;
+}
+
+bool Channel::isOperator(int uid) {
+	return this->operators.find(uid) != operators.end();
+}
+
+void Channel::toggleOperator(int uid) {
+	if (isOperator(uid))
+		this->operators.erase(uid);
+	else
+		this->operators.insert(uid);
+}
 
 // Flag management
 uint8_t Channel::getFlags(void){
@@ -73,7 +110,18 @@ void Channel::unsetFlag(char flag){
 // Channel management
 void Channel::addUser(User* user, bool isOperator) {
 	users[user->getId()] = user;
-	operators[user->getId()] = isOperator;
+	if (isOperator)
+		toggleOperator(user->getId());
+}
+
+bool Channel::hasUser(int fd) const {
+	return users.find(fd) != users.end();
+}
+
+bool Channel::hasUser(std::string nick){
+	if (findUserWithNick(users, nick))
+		return true;
+	return false;
 }
 
 void Channel::removeUser(int fd) {
@@ -81,17 +129,12 @@ void Channel::removeUser(int fd) {
 	operators.erase(fd);
 }
 
-bool Channel::isOperator(int fd) const {
-	std::map<int, bool>::const_iterator it = operators.find(fd);
-	return it != operators.end() && it->second;
-}
-
 // Generate user list with prefixes
-std::string Channel::getUserList() const {
+std::string Channel::getUserList(){
 	std::string list;
-	std::map<int, User*>::const_iterator it;
+	std::map<int, User*>::iterator it;
 	for (it = users.begin(); it != users.end(); ++it) {
-		if (operators.find(it->first) != operators.end() && operators.find(it->first)->second) {
+		if (isOperator(it->first)) {
 			list += "@";
 		}
 		list += it->second->getNick() + " ";

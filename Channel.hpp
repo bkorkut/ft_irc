@@ -2,6 +2,7 @@
 #define CHANNEL_HPP
 
 #include <map>
+#include <set>
 #include "User.hpp"
 
 typedef unsigned char uint8_t;  // C++98 uyumlu tanım
@@ -28,14 +29,25 @@ private:
 	std::string				name;
 	std::string				topic;
 	std::string				password;
-	std::map<int, bool>		operators;	// fd -> is_operator
-	std::map<int, User *>	users;		// fd -> User pointer
+	int						limit;
+	std::set<int>			operators;
+	std::map<int, User *>	users;
 	uint8_t					modeFlags;
 
 public:
 	// Constructors
 	Channel() {}
 	Channel(const std::string& channelName) : name(channelName) {}
+
+	// mode management
+	int			getLimit();
+	void		setLimit(int l);
+	std::string	getTopic();
+	void		setTopic(std::string t);
+	std::string	getPassword();
+	void		setPassword(std::string p);
+	bool		isOperator(int uid);
+	void		toggleOperator(int uid);
 
 	// Flag management
 	uint8_t	getFlags(void);
@@ -48,17 +60,9 @@ public:
 
 	// Channel management
 	void addUser(User* user, bool isOperator = false);
-	bool hasUser(int fd) const {
-		return users.find(fd) != users.end();
-	}
+	bool hasUser(int fd) const;
+	bool hasUser(std::string nick);
 	void removeUser(int fd);
-	bool isOperator(int fd) const;
-
-	void setOperator(int fd, bool status) {
-		if (users.find(fd) != users.end()) {
-			operators[fd] = status;
-		}
-	}
 
 	const std::string& getName() const { return name; }
 	const std::map<int, User*>& getUsers() const { return users; }
@@ -67,7 +71,7 @@ public:
 	void setName(const std::string& channelName) { name = channelName; }
 
 	// Generate user list with prefixes
-	std::string getUserList() const;
+	std::string getUserList();
 };
 
 #endif

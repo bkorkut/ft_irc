@@ -11,24 +11,11 @@ typedef struct s_mode{
 	s_mode(bool s, char m, std::string p) : sign(s), mode(m), param(p) {}
 }		t_mode;
 
-static t_mode createMode(int *parcount, bool sign, char mode, std::vector<std::string>::iterator &param, bool end)
-{
-	if (mode == INVONLY || mode == CHTOPIC || (!sign && mode != CHANOP))
-		return t_mode(sign, mode, "");
-	if (end)
-		throw errorException(ERR_NEEDMOREPARAMS(std::string("MODE")));
-	t_mode ret(sign, mode, *param);
-	param++;
-	(*parcount)++;
-	return ret;
-}
-
 static std::vector<t_mode> parseModes(Channel *channel, std::vector<std::string> params)
 {
 	std::vector<t_mode> ret;
 	std::vector<std::string>::iterator pit = params.begin();
 	std::advance(pit, 2);
-	int	parcount = 0;
 	for (; pit != params.end();)
 	{
 		std::string &modes = *pit;
@@ -49,39 +36,57 @@ static std::vector<t_mode> parseModes(Channel *channel, std::vector<std::string>
 				throw errorException(ERR_NEEDMOREPARAMS(std::string("MODE")));
 			else if (!std::strchr(CH_MODESET, *sit))
 				throw errorException(ERR_UNKNOWNMODE(std::string(1, *sit), channel->getName()));
+			else if (*sit == INVONLY || *sit == CHTOPIC)
+				ret.push_back(t_mode(sign, *sit, ""));
+			else if (pit == params.end())
+				throw errorException(ERR_NEEDMOREPARAMS(std::string("MODE")));
 			else
 			{
-				ret.push_back(createMode(&parcount, sign, *sit, pit, pit == params.end()));
-				if (parcount > 3)
-					throw errorException(ERR_UNKNOWNMODE(std::string(1, *sit), channel->getName()));
+				if (*sit == CHANOP && !channel->hasUser(*pit))
+					throw errorException(ERR_USERNOTINCHANNEL(std::string("source"), "nick", channel->getName()));
+				ret.push_back(t_mode(sign, *sit, *pit));
+				pit++;
 			}
 		}
 	}
 	return ret;
 }
 
-static void executeMode(Channel *channel, t_mode mode)
+static void executeMode(Channel *channel, t_mode mode, std::map<int, User> &users)
 {
-	std::cout << "sign:" << mode.sign << " mode: " << mode.mode << " param: " << mode.param << std::endl;
-	channel->getName();
-	// switch (mode.mode){
-	// 	case INVONLY:
-	// 		// fall through
-	// 	case CHTOPIC:
-	// 		mode.sign ? channel->setFlag(mode.mode) : channel->unsetFlag(mode.mode);
-	// 		break ;
-	// 		// fall through
-	// 	case LIMIT:
-	// 		mode.sign ? channel->setFlag(mode.mode) : channel->unsetFlag(mode.mode);
-	// 		// fall through
-	// 	case PASSKEY:
-	// 		mode.sign ? channel->setFlag(mode.mode) : channel->unsetFlag(mode.mode);
-	// 		// fall through
-	// 	case CHANOP:
-	// 		break ;
-	// 	default:
-	// 		throw errorException(ERR_UNKNOWNMODE(std::string(SERVER_NAME), mode.mode, channel->getName()));
-	// }
+	switch (mode.mode){
+		case INVONLY:
+			// fall through
+		case CHTOPIC:
+			mode.sign ? channel->setFlag(mode.mode) : channel->unsetFlag(mode.mode);
+			break ;
+		case LIMIT:
+			if (mode.sign)
+			{
+				// check if the number is valid maybe??
+				channel->setFlag(mode.mode);
+				channel->setLimit(std::atoi(mode.param.c_str()));
+			}
+			else
+				channel->unsetFlag(mode.mode);
+			break ;
+		case PASSKEY:
+			if (mode.sign)
+			{
+				channel->setFlag(mode.mode);
+				channel->setPassword(mode.param);
+			}
+			else
+				channel->unsetFlag(mode.mode);
+			break ;
+		case CHANOP:
+			User *user = findUserWithNick(users, mode.param);
+			if (!user)
+				throw errorException(ERR_USERNOTINCHANNEL(mode.param, channel->getName()));
+			if ((mode.sign && !channel->isOperator(user->getId())) || (!mode.sign && channel->isOperator(user->getId())))
+				channel->toggleOperator(user->getId());
+			break ;
+	}
 }
 
 // Channel mode parameters:
@@ -99,17 +104,14 @@ void Server::MODE(int fd, std::vector<std::string> params)
 	if (channel == _channels.end())
 		return sendData(fd, ERR_NOSUCHCHANNEL(_serverName, params[1]));
 	if (params.size() < 3)
-	{
-		std::cout << "Debug: three arguments" << std::endl;
-		return sendData(fd, RPL_CHANNELMODEIS(_users[fd].getNick(), params[1], "+l", "100"));
-	}
-	if (false) // - the user is not a chanop
+		return sendData(fd, RPL_CHANNELMODEIS(_users[fd].getNick(), params[1], "+l", "100")); // correct this to get correct modes
+	if (false) // THE USER NOT A CHANOP
 		return sendData(fd, ERR_CHANOPRIVSNEEDED(_serverName, params[1]));
 	try
 	{
 		std::vector<t_mode> modes = parseModes(&channel->second, params);
 		for (std::vector<t_mode>::iterator mit = modes.begin(); mit != modes.end(); ++mit)
-			executeMode(&channel->second, *mit);
+			executeMode(&channel->second, *mit, _users);
 	}
 	catch(const std::exception& e)
 	{
@@ -119,11 +121,7 @@ void Server::MODE(int fd, std::vector<std::string> params)
 }
 
 		// e.g.: MODE #Finnish +imIbe *!*@*.fi user!*@* spamword -k secret
-		// if (/*User not on channel*/)
-		// 	return sendData(fd, ERR_NOTONCHANNEL(_serverName, "Channel"));
 		// if (/*there is no user with the provided nick*/)
 		// 	return sendData(fd, ERR_NOSUCHNICK(_serverName, "provided nick"));
 		// if (/*Channel key is already set*/)
 		// 	return sendData(fd, ERR_KEYSET(_serverName, "Channel"));
-
-// parser needs fix for spaces

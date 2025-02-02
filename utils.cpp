@@ -32,12 +32,20 @@ User *findUserWithNick(std::map<int, User> &users, std::string nick)
 	return NULL;
 }
 
+// Return a pointer to a User if there is a match, NULL if not
+User *findUserWithNick(std::map<int, User *> &users, std::string nick)
+{
+	for (std::map<int, User *>::iterator i = users.begin(); i != users.end(); ++i)
+		if (toLower(i->second->getNick()) == toLower(nick))
+			return i->second;
+	return NULL;
+}
+
 // Split using vectors in C++
 std::vector<std::string>	vecSplit(std::string toSplit, std::string septor)
 {
 	size_t						pos = 0;
 	size_t						foundPos;
-	std::string					tmp;
 	std::vector<std::string>	retval;
 
 	do
@@ -48,7 +56,7 @@ std::vector<std::string>	vecSplit(std::string toSplit, std::string septor)
 			if (foundPos > pos)
 				retval.push_back(toSplit.substr(pos, foundPos - pos));
 		}
-		else
+		else if (pos < toSplit.size())
 			retval.push_back(toSplit.substr(pos, toSplit.size()));
 		pos = foundPos + septor.size();
 	} while (foundPos != std::string::npos);

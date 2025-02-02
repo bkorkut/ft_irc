@@ -9,6 +9,11 @@
 # include <unistd.h>
 # include <sstream>
 # include <ctime>
+# include <vector>
+# include <map>
+# include "User.hpp"
+
+typedef unsigned char uint8_t;
 
 // Error Codes
 # define ERR_NOSUCHNICK(source, nick)					"401 " + source + " " + nick + " :No such nick\r\n"														//Belirtilen takma adın mevcut olmadığını bildirir.
@@ -20,7 +25,7 @@
 # define ERR_NONICKNAMEGIVEN							"431 :No nickname given\r\n"																			//Bir takma ad belirtilmediğini bildirir.
 # define ERR_ERRONEUSNICKNAME(nick)						"432 " + nick + " :Erroneous nickname\r\n"																//Belirtilen takma adın hatalı olduğunu bildirir.
 # define ERR_NICKNAMEINUSE(nick)						"433 " + nick + " :Nickname is already in use\r\n"														//Belirtilen takma adın kullanımda olduğunu bildirir.
-# define ERR_USERNOTINCHANNEL(source, nick, channel)	"441 " + source + " " + nick + " " + channel + " :They aren't on that channel\r\n"						//Belirtilen kullanıcının kanalda olmadığını belirtir.
+# define ERR_USERNOTINCHANNEL(nick, channel)			":ft_irc 441 " + nick + " " + channel + " :They aren't on that channel\r\n"						//Belirtilen kullanıcının kanalda olmadığını belirtir.
 # define ERR_NOTONCHANNEL(source, channel)				"442 " + source + " " + channel + " :You're not on that channel\r\n"									//Kullanıcının belirtilen kanalda olmadığını belirtir.
 # define ERR_USERONCHANNEL(source, channel)				"443 " + source + " " + channel + " :is already on channel\r\n"											//Kullanıcının belirtilen kanalda zaten olduğunu belirtir.
 # define ERR_NEEDMOREPARAMS(command)					"461 " + command + " :Not enough parameters\r\n"														//Komutun çalışması için daha fazla parametre gerektiğini belirtir.
@@ -64,6 +69,7 @@ class errorException : public std::exception{
 std::string	toLower(std::string str);
 std::string	channelFlagsToString(uint8_t flags);
 User		*findUserWithNick(std::map<int, User> &users, std::string nick);
+User		*findUserWithNick(std::map<int, User *> &users, std::string nick);
 std::vector<std::string>	vecSplit(std::string toSplit, std::string septor);
 
 #endif
