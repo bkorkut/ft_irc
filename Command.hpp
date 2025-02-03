@@ -35,6 +35,7 @@ typedef unsigned char uint8_t;
 # define ERR_UNKNOWNMODE(char, channel)					":ft_irc 472 " + char + " :is unknown mode char to me for " + channel + "\r\n"					//Belirtilen modun bilinmeyen bir mod olduğunu belirtir.
 # define ERR_INVITEONLYCHAN(nick, channel)				"473 " + nick + " " + channel + " :Cannot join channel (+i)\r\n"										//Bir kanala davet olmadan katılmaya çalışıldığını belirtir.
 # define ERR_BADCHANNELKEY(source, channel)				"475 " + source + " " + channel + " :Cannot join channel (+k)\r\n"										//Kanalın bir anahtarla (şifre) korunduğunu belirtir.
+# define ERR_NOCHANMODES(channel)						":ft_irc 477 " + channel + " :Channel doesn't support modes\r\n"
 # define ERR_CHANOPRIVSNEEDED(source, channel)			": 482 " + source + " " + channel + " :You're not the channel operator\r\n"								//Bir kanalda operatör ayrıcalıkları gerektiğini belirtir.
 # define ERR_UMODEUNKNOWNFLAG(server)					":ft_irc 501 :Unknown MODE flag\r\n"
 # define ERR_USERSDONTMATCH(server)						":ft_irc 502 :Cannot change mode for other users\r\n"
@@ -45,7 +46,7 @@ typedef unsigned char uint8_t;
 # define RPL_LISTSTART(nick, num_users)					": 321 " + nick + " Channel : "+ num_users + "\r\n"														//LIST komutunun başlangıcını belirtir.
 # define RPL_LIST(source, channel, userCount, topic)	": 322 " + source + " " + channel + " " + userCount + " " + topic + "\r\n"								//Bir kanalın kullanıcı sayısını ve konusunu belirtir.
 # define RPL_LISTEND(source)							"323 " + source + " :End of /LIST\r\n"																//LIST komutunun sonunu belirtir.
-# define RPL_CHANNELMODEIS(target, channel, mode, params)":ft_irc 324 " + target + " " + channel + " " + mode + " " + params "\r\n"																//LIST komutunun sonunu belirtir.
+# define RPL_CHANNELMODEIS(target, channel, mode)		":ft_irc 324 " + target + " " + channel + " " + mode + "\r\n"																//LIST komutunun sonunu belirtir.
 # define RPL_NOTOPIC(source, channel)					":ft_irc 331 " + source + " " + channel + " :No topic is set" + "\r\n"											//Bir kanalda konu belirlenmediğini bildirir.
 # define RPL_TOPIC(source, channel, topic)				"332 " + source + " " + channel + " " + topic + "\r\n"													//Bir kanaldaki mevcut konuyu belirtir.
 # define RPL_NAMREPLY(source, channel, nickList)		": 353 " + source + " = " + channel + " :" + nickList + "\r\n"											//Bir kanaldaki kullanıcıların listesini içerir.
@@ -67,7 +68,6 @@ class errorException : public std::exception{
 };
 
 std::string	toLower(std::string str);
-std::string	channelFlagsToString(uint8_t flags);
 User		*findUserWithNick(std::map<int, User> &users, std::string nick);
 User		*findUserWithNick(std::map<int, User *> &users, std::string nick);
 std::vector<std::string>	vecSplit(std::string toSplit, std::string septor);

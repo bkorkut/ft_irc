@@ -7,7 +7,6 @@ typedef struct s_mode{
 	bool		sign;
 	char		mode;
 	std::string	param;
-
 	s_mode(bool s, char m, std::string p) : sign(s), mode(m), param(p) {}
 }		t_mode;
 
@@ -36,14 +35,14 @@ static std::vector<t_mode> parseModes(Channel *channel, std::vector<std::string>
 				throw errorException(ERR_NEEDMOREPARAMS(std::string("MODE")));
 			else if (!std::strchr(CH_MODESET, *sit))
 				throw errorException(ERR_UNKNOWNMODE(std::string(1, *sit), channel->getName()));
-			else if (*sit == INVONLY || *sit == CHTOPIC)
+			else if (*sit == INVONLY || *sit == CHTOPIC || (!sign && (*sit == LIMIT || *sit == PASSKEY)))
 				ret.push_back(t_mode(sign, *sit, ""));
 			else if (pit == params.end())
 				throw errorException(ERR_NEEDMOREPARAMS(std::string("MODE")));
 			else
 			{
 				if (*sit == CHANOP && !channel->hasUser(*pit))
-					throw errorException(ERR_USERNOTINCHANNEL(std::string("source"), "nick", channel->getName()));
+					throw errorException(ERR_USERNOTINCHANNEL(*pit, channel->getName()));
 				ret.push_back(t_mode(sign, *sit, *pit));
 				pit++;
 			}
@@ -71,7 +70,9 @@ static void executeMode(Channel *channel, t_mode mode, std::map<int, User> &user
 				channel->unsetFlag(mode.mode);
 			break ;
 		case PASSKEY:
-			if (mode.sign)
+			if (mode.sign && channel->hasFlag(PASSKEY))
+				throw errorException(ERR_KEYSET(channel->getName()));
+			else if (mode.sign)
 			{
 				channel->setFlag(mode.mode);
 				channel->setPassword(mode.param);
@@ -104,8 +105,13 @@ void Server::MODE(int fd, std::vector<std::string> params)
 	if (channel == _channels.end())
 		return sendData(fd, ERR_NOSUCHCHANNEL(_serverName, params[1]));
 	if (params.size() < 3)
-		return sendData(fd, RPL_CHANNELMODEIS(_users[fd].getNick(), params[1], "+l", "100")); // correct this to get correct modes
-	if (false) // THE USER NOT A CHANOP
+	{
+		std::string modes = channel->second.getModes();
+		if (modes.empty())
+			return sendData(fd, RPL_CHANNELMODEIS(_users[fd].getNick(), params[1], ":0"));
+		return sendData(fd, RPL_CHANNELMODEIS(_users[fd].getNick(), params[1], modes));
+	}
+	if (!channel->second.isOperator(fd))
 		return sendData(fd, ERR_CHANOPRIVSNEEDED(_serverName, params[1]));
 	try
 	{
@@ -119,9 +125,3 @@ void Server::MODE(int fd, std::vector<std::string> params)
 		return sendData(fd, e.what());
 	}
 }
-
-		// e.g.: MODE #Finnish +imIbe *!*@*.fi user!*@* spamword -k secret
-		// if (/*there is no user with the provided nick*/)
-		// 	return sendData(fd, ERR_NOSUCHNICK(_serverName, "provided nick"));
-		// if (/*Channel key is already set*/)
-		// 	return sendData(fd, ERR_KEYSET(_serverName, "Channel"));

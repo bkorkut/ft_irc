@@ -50,13 +50,14 @@ public:
 	void		toggleOperator(int uid);
 
 	// Flag management
-	uint8_t	getFlags(void);
-	bool	hasFlag(ChannelFlags flag);
-	bool	hasFlag(char flag);
-	void	setFlag(ChannelFlags flag);
-	void	setFlag(char flag);
-	void	unsetFlag(ChannelFlags flag);
-	void	unsetFlag(char flag);
+	uint8_t		getFlags(void);
+	std::string	getModes(void);
+	bool		hasFlag(ChannelFlags flag);
+	bool		hasFlag(char flag);
+	void		setFlag(ChannelFlags flag);
+	void		setFlag(char flag);
+	void		unsetFlag(ChannelFlags flag);
+	void		unsetFlag(char flag);
 
 	// Channel management
 	void addUser(User* user, bool isOperator = false);

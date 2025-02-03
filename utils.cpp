@@ -11,18 +11,6 @@ std::string	toLower(std::string str)
 	return str;
 }
 
-std::string	channelFlagsToString(uint8_t flags)
-{
-	std::string ret;
-	if (flags & B_INVONLY)
-		ret += INVONLY;
-	if (flags & B_LIMIT)
-		ret += LIMIT;
-	if (flags & B_PASSKEY)
-		ret += PASSKEY;
-	return ret;
-}
-
 // Return a pointer to a User if there is a match, NULL if not
 User *findUserWithNick(std::map<int, User> &users, std::string nick)
 {

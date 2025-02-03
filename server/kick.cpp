@@ -72,7 +72,7 @@ void Server::KICK(int fd, std::vector<std::string> params) {
 
     if (targetFd == -1) {
         std::cout << "Debug: Target user not found: " << targetNick << std::endl;
-        return sendData(fd, ERR_USERNOTINCHANNEL(_users[fd].getNick(), targetNick, channelName));
+        return sendData(fd, ERR_USERNOTINCHANNEL(targetNick, channelName));
     }
 
     // KICK mesajını oluştur
