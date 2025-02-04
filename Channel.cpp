@@ -10,14 +10,6 @@ void	Channel::setLimit(int l){
 	this->limit = l;
 }
 
-std::string	Channel::getTopic(){
-	return (this->topic);
-}
-
-void	Channel::setTopic(std::string t){
-	this->topic = t;
-}
-
 std::string	Channel::getPassword(){
 	return (this->password);
 }

@@ -1,5 +1,5 @@
 #ifndef CHANNEL_HPP
-#define CHANNEL_HPP
+# define CHANNEL_HPP
 
 #include <map>
 #include <set>
@@ -42,8 +42,6 @@ public:
 	// mode management
 	int			getLimit();
 	void		setLimit(int l);
-	std::string	getTopic();
-	void		setTopic(std::string t);
 	std::string	getPassword();
 	void		setPassword(std::string p);
 	bool		isOperator(int uid);
