@@ -23,7 +23,7 @@ typedef unsigned char uint8_t;
 # define ERR_NORECIPIENT(source)						"411 " + source + " :No recipient\r\n"																	//Alıcı belirtilmediğini bildirir.
 # define ERR_NOTEXTTOSEND(source)						"412 " + source + " :No text to send\r\n"																//Gönderilecek bir metin olmadığını belirtir.
 # define ERR_NONICKNAMEGIVEN							"431 :No nickname given\r\n"																			//Bir takma ad belirtilmediğini bildirir.
-# define ERR_ERRONEUSNICKNAME(nick)						"432 " + nick + " :Erroneous nickname\r\n"																//Belirtilen takma adın hatalı olduğunu bildirir.
+# define ERR_ERRONEUSNICKNAME(nick)						":ft_irc 432 " + nick + " :Erroneous nickname\r\n"																//Belirtilen takma adın hatalı olduğunu bildirir.
 # define ERR_NICKNAMEINUSE(nick)						"433 " + nick + " :Nickname is already in use\r\n"														//Belirtilen takma adın kullanımda olduğunu bildirir.
 # define ERR_USERNOTINCHANNEL(nick, channel)			":ft_irc 441 " + nick + " " + channel + " :They aren't on that channel\r\n"						//Belirtilen kullanıcının kanalda olmadığını belirtir.
 # define ERR_NOTONCHANNEL(source, channel)				"442 " + source + " " + channel + " :You're not on that channel\r\n"									//Kullanıcının belirtilen kanalda olmadığını belirtir.
@@ -48,7 +48,7 @@ typedef unsigned char uint8_t;
 # define RPL_LISTEND(source)							"323 " + source + " :End of /LIST\r\n"																//LIST komutunun sonunu belirtir.
 # define RPL_CHANNELMODEIS(target, channel, mode)		":ft_irc 324 " + target + " " + channel + " " + mode + "\r\n"																//LIST komutunun sonunu belirtir.
 # define RPL_NOTOPIC(source, channel)					":ft_irc 331 " + source + " " + channel + " :No topic is set" + "\r\n"											//Bir kanalda konu belirlenmediğini bildirir.
-# define RPL_TOPIC(source, channel, topic)				"332 " + source + " " + channel + " " + topic + "\r\n"													//Bir kanaldaki mevcut konuyu belirtir.
+# define RPL_TOPIC(source, channel, topic)				":ft_irc 332 " + source + " " + channel + " " + topic + "\r\n"													//Bir kanaldaki mevcut konuyu belirtir.
 # define RPL_NAMREPLY(source, channel, nickList)		": 353 " + source + " = " + channel + " :" + nickList + "\r\n"											//Bir kanaldaki kullanıcıların listesini içerir.
 # define RPL_ENDOFNAMES(source, channel)				"366 " + source + " " + channel + " :End of /NAMES list." + "\r\n"										//Bir kanalın kullanıcı listesinin sonunu belirtir.
 # define RPL_JOIN(source, channel)						":" + source + " JOIN :" + channel + "\r\n"																//Bir kullanıcının bir kanala katıldığını belirtir.

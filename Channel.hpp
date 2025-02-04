@@ -68,7 +68,6 @@ public:
 	const std::string& getName() const { return name; }
 	const std::map<int, User*>& getUsers() const { return users; }
 	const std::string& getTopic() const { return topic; }
-	void setTopic(const std::string& newTopic) { topic = newTopic; }
 	void setName(const std::string& channelName) { name = channelName; }
 
 	// Generate user list with prefixes
