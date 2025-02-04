@@ -101,10 +101,10 @@ void Server::MODE(int fd, std::vector<std::string> params)
 	if (params.size() < 2)
 		return sendData(fd, ERR_NEEDMOREPARAMS(std::string("MODE")));
 	else if (!std::strchr("#&+!", params[1][0]))
-		return sendData(fd, ERR_NOSUCHCHANNEL(_serverName, params[1]));
+		return sendData(fd, ERR_NOSUCHCHANNEL(_users[fd].getNick(), params[1]));
 	std::map<std::string, Channel>::iterator channel = _channels.find(params[1]);
 	if (channel == _channels.end())
-		return sendData(fd, ERR_NOSUCHCHANNEL(_serverName, params[1]));
+		return sendData(fd, ERR_NOSUCHCHANNEL(_users[fd].getNick(), params[1]));
 	if (params.size() < 3)
 	{
 		std::string modes = channel->second.getModes();

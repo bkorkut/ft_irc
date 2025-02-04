@@ -1,4 +1,5 @@
-join dosyasına limit eklenecek.
-mode +i var olduğu durumda join ile girmemesi lazım.
-bir kullanıcıyı kanala invite ederken kanalda değil serverda ara.
-topic yeni bir kullancı girildiğinde önceden oluşturulmuş konuyu görmesi.
+Add limit check to JOIN
+Add mode +i check to JOIN
+Show the existing TOPIC for a new user in channel
+Check if errors are handled server bind
+Check if nums are allowed in user nicks in RFC

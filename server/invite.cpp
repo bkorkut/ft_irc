@@ -13,17 +13,13 @@ void Server::INVITE(int fd, std::vector<std::string> params) {
 	std::string targetNick = params[1];
 	std::string channelName = params[2];
 
-	// Add # prefix if not present
-	if (channelName[0] != '#')
-		channelName = "#" + channelName;
-
 	// Find the channel
 	std::map<std::string, Channel>::iterator channelIt = _channels.find(channelName);
 	if (channelIt == _channels.end())
 		return sendData(fd, ERR_NOSUCHCHANNEL(_users[fd].getNick(), channelName));
 
 	// Check if user is on the channel
-	if (!channelIt->second.hasUser(fd)) //serverda kontrol edilicek
+	if (!channelIt->second.hasUser(fd))
 		return sendData(fd, ERR_NOTONCHANNEL(_users[fd].getNick(), channelName));
 
 	// Check if user is operator if channel is invite-only

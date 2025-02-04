@@ -36,11 +36,6 @@ void Server::KICK(int fd, std::vector<std::string> params) {
 	std::cout << "Target: " << targetNick << std::endl;
 	std::cout << "Reason: " << reason << std::endl;
 
-	// Kanal adını kontrol et ve düzelt
-	if (!channelName.empty() && channelName[0] != '#') {
-		channelName = "#" + channelName;
-	}
-
 	// Kanal var mı kontrol et
 	std::map<std::string, Channel>::iterator channelIt = _channels.find(channelName);
 	if (channelIt == _channels.end()) {
@@ -76,7 +71,7 @@ void Server::KICK(int fd, std::vector<std::string> params) {
 	}
 
 	// KICK mesajını oluştur
-	std::string kickMsg = RPL_KICK(_users[fd].getNick() + "!" + _users[fd].getUsername() + "@" + _serverName,
+	std::string kickMsg = MSG_KICK(_users[fd].getNick() + "!" + _users[fd].getUsername() + "@" + _serverName,
 								  channelName, targetNick, reason);
 
 	std::cout << "Debug: Sending kick message: " << kickMsg;
