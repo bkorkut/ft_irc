@@ -84,7 +84,8 @@ static void executeMode(Channel *channel, t_mode mode, std::map<int, User> &user
 			User *user = findUserWithNick(users, mode.param);
 			if (!user)
 				throw errorException(ERR_USERNOTINCHANNEL(mode.param, channel->getName()));
-			if ((mode.sign && !channel->isOperator(user->getId())) || (!mode.sign && channel->isOperator(user->getId())))
+			if ((mode.sign && !channel->isOperator(user->getId()))
+					|| (!mode.sign && channel->isOperator(user->getId())))
 				channel->toggleOperator(user->getId());
 			break ;
 	}

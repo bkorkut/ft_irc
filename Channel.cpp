@@ -13,7 +13,6 @@ void	Channel::setLimit(int l){
 std::string	Channel::getTopic(){
 	return (this->topic);
 }
-
 void	Channel::setTopic(std::string t){
 	this->topic = t;
 }

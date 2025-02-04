@@ -6,7 +6,7 @@ int isPort(std::string portNum) {
 		if (portNum[i] < '0' || portNum[i] > '9')
 			throw std::invalid_argument("The port has to be number");
 	}
-	int num = std::atoi(portNum.c_str());
+	int	num = std::atoi(portNum.c_str());
 	if (num < 0 || num > 65535) // maybe also block 80 and premade ports, it's gonna auto fail on binding though and that error is managed
 		throw std::invalid_argument("The port number has to be between 0 & 65535");
 	return num;

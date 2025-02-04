@@ -5,37 +5,37 @@
 
 class User {
 private:
-    const int   id;
-    std::string nick;
-    std::string username;
-    std::string realname;
-    std::string password;
-    bool        isAuthenticated;
-    bool        isRegistered;
+	const int   id;
+	std::string nick;
+	std::string username;
+	std::string realname;
+	std::string password;
+	bool		isAuthenticated;
+	bool		isRegistered;
 
 public:
-    std::string buffer;
+	std::string buffer;
 
-    User(void);
-    User(int fd);
+	User(void);
+	User(int fd);
 
-    // Getters
-    const std::string&  getNick() const;
-    const std::string&  getUsername() const;
-    const std::string&  getRealname() const;
-    bool               getIsAuthenticated() const;
-    bool               getIsRegistered() const;
-    int                getId() const;
+	// Getters
+	const std::string&	getNick() const;
+	const std::string&	getUsername() const;
+	const std::string&	getRealname() const;
+	bool				getIsAuthenticated() const;
+	bool				getIsRegistered() const;
+	int					getId() const;
 
-    // Setters
-    void               setNick(std::string newNick);
-    void               setUsername(std::string newUsername);
-    void               setRealname(std::string newRealname);
-    void               setPassword(std::string newPassword);
+	// Setters
+	void				setNick(std::string newNick);
+	void				setUsername(std::string newUsername);
+	void				setRealname(std::string newRealname);
+	void				setPassword(std::string newPassword);
 
-    // Authentication methods
-    bool               authenticate(const std::string& serverPassword);
-    bool               checkRegistration();
+	// Authentication methods
+	bool				authenticate(const std::string& serverPassword);
+	bool				checkRegistration();
 };
 
 #endif
