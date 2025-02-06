@@ -16,24 +16,24 @@
 typedef unsigned char uint8_t;
 
 // Numeric error Codes
-# define ERR_NOSUCHNICK(source, nick)					"401 " + source + " " + nick + " :No such nick\r\n"														//Belirtilen takma adın mevcut olmadığını bildirir.
+# define ERR_NOSUCHNICK(source, nick)					":ft_irc 401 " + source + " " + nick + " :No such nick\r\n"														//Belirtilen takma adın mevcut olmadığını bildirir.
 # define ERR_NOSUCHCHANNEL(source, channel)				":ft_irc 403 " + source + " " + channel + " :No such channel\r\n"												//Belirtilen kanalın mevcut olmadığını bildirir.
-# define ERR_NORECIPIENT(source)						"411 " + source + " :No recipient\r\n"																	//Alıcı belirtilmediğini bildirir.
-# define ERR_NOTEXTTOSEND(source)						"412 " + source + " :No text to send\r\n"																//Gönderilecek bir metin olmadığını belirtir.
-# define ERR_NONICKNAMEGIVEN							"431 :No nickname given\r\n"																			//Bir takma ad belirtilmediğini bildirir.
+# define ERR_NORECIPIENT(source)						":ft_irc 411 " + source + " :No recipient\r\n"																	//Alıcı belirtilmediğini bildirir.
+# define ERR_NOTEXTTOSEND(source)						":ft_irc 412 " + source + " :No text to send\r\n"																//Gönderilecek bir metin olmadığını belirtir.
+# define ERR_NONICKNAMEGIVEN							":ft_irc 431 :No nickname given\r\n"																			//Bir takma ad belirtilmediğini bildirir.
 # define ERR_ERRONEUSNICKNAME(nick)						":ft_irc 432 " + nick + " :Erroneous nickname\r\n"														//Belirtilen takma adın hatalı olduğunu bildirir.
-# define ERR_NICKNAMEINUSE(nick)						"433 " + nick + " :Nickname is already in use\r\n"														//Belirtilen takma adın kullanımda olduğunu bildirir.
+# define ERR_NICKNAMEINUSE(nick)						":ft_irc 433 " + nick + " :Nickname is already in use\r\n"														//Belirtilen takma adın kullanımda olduğunu bildirir.
 # define ERR_USERNOTINCHANNEL(nick, channel)			":ft_irc 441 " + nick + " " + channel + " :They aren't on that channel\r\n"								//Belirtilen kullanıcının kanalda olmadığını belirtir.
-# define ERR_NOTONCHANNEL(source, channel)				"442 " + source + " " + channel + " :You're not on that channel\r\n"									//Kullanıcının belirtilen kanalda olmadığını belirtir.
-# define ERR_USERONCHANNEL(source, channel)				"443 " + source + " " + channel + " :is already on channel\r\n"											//Kullanıcının belirtilen kanalda zaten olduğunu belirtir.
-# define ERR_NEEDMOREPARAMS(command)					"461 " + command + " :Not enough parameters\r\n"														//Komutun çalışması için daha fazla parametre gerektiğini belirtir.
-# define ERR_ALREADYREGISTERED							"462 :Unauthorized command (already registered)\r\n"													//Kullanıcının zaten kayıtlı olduğunu belirtir.
+# define ERR_NOTONCHANNEL(source, channel)				":ft_irc 442 " + source + " " + channel + " :You're not on that channel\r\n"									//Kullanıcının belirtilen kanalda olmadığını belirtir.
+# define ERR_USERONCHANNEL(source, channel)				":ft_irc 443 " + source + " " + channel + " :is already on channel\r\n"											//Kullanıcının belirtilen kanalda zaten olduğunu belirtir.
+# define ERR_NEEDMOREPARAMS(command)					":ft_irc 461 " + command + " :Not enough parameters\r\n"														//Komutun çalışması için daha fazla parametre gerektiğini belirtir.
+# define ERR_ALREADYREGISTERED							":ft_irc 462 :Unauthorized command (already registered)\r\n"													//Kullanıcının zaten kayıtlı olduğunu belirtir.
 # define ERR_KEYSET(channel)							":ft_irc 467 " + channel + " :Channel key already set\r\n"
-# define ERR_CHANNELISFULL(source, channel)				"471 " + source + " " + channel + " :Cannot join channel (+l)\r\n"										//Kanalın dolu olduğunu ve daha fazla kullanıcı kabul edemediğini belirtir.
+# define ERR_CHANNELISFULL(source, channel)				":ft_irc 471 " + source + " " + channel + " :Cannot join channel (+l)\r\n"										//Kanalın dolu olduğunu ve daha fazla kullanıcı kabul edemediğini belirtir.
 # define ERR_UNKNOWNMODE(char, channel)					":ft_irc 472 " + char + " :is unknown mode char to me for " + channel + "\r\n"							//Belirtilen modun bilinmeyen bir mod olduğunu belirtir.
-# define ERR_INVITEONLYCHAN(nick, channel)				"473 " + nick + " " + channel + " :Cannot join channel (+i)\r\n"										//Bir kanala davet olmadan katılmaya çalışıldığını belirtir.
-# define ERR_BADCHANNELKEY(source, channel)				"475 " + source + " " + channel + " :Cannot join channel (+k)\r\n"										//Kanalın bir anahtarla (şifre) korunduğunu belirtir.
-# define ERR_CHANOPRIVSNEEDED(source, channel)			": 482 " + source + " " + channel + " :You're not the channel operator\r\n"								//Bir kanalda operatör ayrıcalıkları gerektiğini belirtir.
+# define ERR_INVITEONLYCHAN(nick, channel)				":ft_irc 473 " + nick + " " + channel + " :Cannot join channel (+i)\r\n"										//Bir kanala davet olmadan katılmaya çalışıldığını belirtir.
+# define ERR_BADCHANNELKEY(source, channel)				":ft_irc 475 " + source + " " + channel + " :Cannot join channel (+k)\r\n"										//Kanalın bir anahtarla (şifre) korunduğunu belirtir.
+# define ERR_CHANOPRIVSNEEDED(source, channel)			":ft_irc 482 " + source + " " + channel + " :You're not the channel operator\r\n"								//Bir kanalda operatör ayrıcalıkları gerektiğini belirtir.
 
 // Numeric reply Codes
 # define RPL_WELCOME(nick, user, host)					":ft_irc 001 " + nick + " :Welcome to the Internet Relay Network " + nick + "!" + user + "@" + host + "\r\n"	//Clientin servera başarıyla kayıt olduğunu haber verir.

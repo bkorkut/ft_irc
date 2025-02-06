@@ -11,6 +11,7 @@ Server::Server() : _serverName(SERVER_NAME), _socketFD(-1), _newSocketFD(-1)
 	fptr["PASS"] = &Server::PASS;
 	fptr["KICK"] = &Server::KICK;
 	fptr["MODE"] = &Server::MODE;
+	fptr["PART"] = &Server::PART;
 	fptr["TOPIC"] = &Server::TOPIC;
 	fptr["INVITE"] = &Server::INVITE;
 	fptr["PRIVMSG"] = &Server::PRIVMSG;
