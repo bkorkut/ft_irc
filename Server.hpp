@@ -64,6 +64,8 @@ class Server
 		void	closeFds();
 		void	run();
 		void	acceptClient();
+		int		findClientIndex(int fd);
+		void	removeClient(int idx);
 		void	recieveData(int fd);
 		void	sendData(int fd, std::string data);
 		void	commandParser(int fd, std::string input);

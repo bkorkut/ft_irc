@@ -70,13 +70,32 @@ void Server::acceptClient() {
 	std::cout << "Client with ID: " << comFD << " connected" << std::endl;
 }
 
+int Server::findClientIndex(int fd) {
+	std::cout << "findClientIndex with fd " << fd << std::endl;
+	for (size_t i = 0; i < _fds.size(); i++) {
+		if (_fds[i].fd == fd)
+			return i;
+	}
+	return -1;
+}
+
+void	Server::removeClient(int idx) {
+	std::cout << "removeClient fd " << _fds[idx].fd << std::endl;
+	close(_fds[idx].fd);
+	std::map<int, User>::iterator user = _users.find(_fds[idx].fd);
+	if (user != _users.end())
+		_users.erase(user);
+	_fds.erase(_fds.begin() + idx);
+}
+
 void Server::recieveData(int fd) {
 	char buf[512];
 	ssize_t bytes = recv(fd, buf, sizeof(buf) - 1, 0);
 
 	if (bytes <= 0) {
-		close(fd);
-		_users.erase(fd);
+		int idx = findClientIndex(fd);
+		if (idx != -1)
+			removeClient(idx);
 	}
 	else if (bytes > 0) {
 		buf[bytes] = '\0';
@@ -128,6 +147,8 @@ void Server::run() {
 					recieveData(_fds[i].fd);
 				readyStatus--;
 			}
+			else if (_fds[i].revents & POLLHUP)
+				removeClient(i);
 		}
 	}
 }
