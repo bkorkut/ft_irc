@@ -1,6 +1,10 @@
 #include "../Server.hpp"
 
+// PRIVMSG target message
+//Parameters: <msgtarget> <text to be sent>
 void Server::PRIVMSG(int fd, std::vector<std::string> params) {
+	std::cout << "\033[32m[PRIVMSG Command]\033[0m" << std::endl;
+
 	if (params.size() < 3)
 		return sendData(fd, ERR_NEEDMOREPARAMS(std::string("PRIVMSG")));
 
@@ -8,7 +12,6 @@ void Server::PRIVMSG(int fd, std::vector<std::string> params) {
 	std::string message = params[2];
 	std::string prefix = _users[fd].getNick() + "!" + _users[fd].getUsername() + "@" + _serverName;
 
-	// Kanal mesajı
 	if (target[0] == '#') {
 		std::map<std::string, Channel>::iterator channel = _channels.find(target);
 		if (channel == _channels.end())
@@ -27,5 +30,13 @@ void Server::PRIVMSG(int fd, std::vector<std::string> params) {
 				sendData(it->first, fullMessage);
 			}
 		}
+	}
+	else
+	{
+		User *user = findUserWithNick(_users, target);
+		if (!user)
+			return sendData(fd, ERR_NOSUCHNICK(_users[fd].getNick(), target));
+		std::string fullMessage = ":" + prefix + " PRIVMSG " + target + " :" + message + "\r\n";
+		sendData(user->getId(), fullMessage);
 	}
 }
