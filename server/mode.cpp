@@ -144,10 +144,7 @@ void Server::MODE(int fd, std::vector<std::string> params) {
 			modeStr += " " + params[i];
 		modeStr += "\r\n";
 
-		const std::map<int, User*>& channelUsers = channel->second.getUsers();
-		for (std::map<int, User*>::const_iterator it = channelUsers.begin(); it != channelUsers.end(); ++it) {
-			sendData(it->first, modeStr);
-		}
+		msgAllUsers(params[1], modeStr);
 	}
 	catch(const std::exception& e) {
 		std::cout << "Caught error: " << e.what() << std::endl;

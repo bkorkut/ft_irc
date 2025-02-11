@@ -72,15 +72,6 @@ void Server::acceptClient() {
 	std::cout << "Client with ID: " << comFD << " connected" << std::endl;
 }
 
-int Server::findClientIndex(int fd) {
-	std::cout << "findClientIndex with fd " << fd << std::endl;
-	for (size_t i = 0; i < _fds.size(); i++) {
-		if (_fds[i].fd == fd)
-			return i;
-	}
-	return -1;
-}
-
 void	Server::removeClient(int idx) {
 	std::cout << "removeClient fd " << _fds[idx].fd << std::endl;
 	close(_fds[idx].fd);
@@ -188,12 +179,4 @@ void Server::commandParser(int fd, std::string input) {
 		if (!params.empty() && fptr.find(params[0]) != fptr.end())
 			(this->*fptr[params[0]])(fd, params);
 	}
-}
-
-void Server::setClientIP(const char* ip){
-	_clientIp = ip ? std::string(ip) : "0.0.0.0";
-}
-
-const std::string Server::getClientIP() const {
-	return _clientIp;
 }

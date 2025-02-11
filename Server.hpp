@@ -66,6 +66,7 @@ class Server
 		void	run();
 		void	acceptClient();
 		void	setClientIP(const char* ip);
+		void	msgAllUsers(const std::string& channelName, const std::string& msg);
 		const 	std::string getClientIP() const;
 		int		findClientIndex(int fd);
 		void	removeClient(int idx);
