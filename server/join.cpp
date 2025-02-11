@@ -56,13 +56,9 @@ void Server::JOIN(int fd, std::vector<std::string> parameters) {
 	}
 
 	// JOIN mesajını kanaldaki tüm kullanıcılara gönder
-	std::string prefix = user->getNick() + "!" + user->getUsername() + "@" + _serverName;
+	std::string prefix = user->getNick() + "!" + user->getUsername() + "@" + getClientIP();
 	std::string joinMsg = ":" + prefix + " JOIN " + channelName + "\r\n";
-
-	const std::map<int, User*>& channelUsers = channelIt->second.getUsers();
-	for (std::map<int, User*>::const_iterator it = channelUsers.begin(); it != channelUsers.end(); ++it) {
-		sendData(it->first, joinMsg);
-	}
+	msgAllUsers(channelName, joinMsg);
 
 	// Topic mesajını gönder
 	const std::string& topic = channelIt->second.getTopic();

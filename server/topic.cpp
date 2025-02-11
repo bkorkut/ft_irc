@@ -44,10 +44,7 @@ void	Server::TOPIC(int fd, std::vector<std::string> params)
 	std::string prefix = _users[fd].getNick() + "!" + _users[fd].getUsername() + "@" + _serverName;
 	std::string topicMsg = ":" + prefix + " TOPIC " + channel->second.getName() + " :" + channel->second.getTopic() + "\r\n";
 
-	const std::map<int, User*>& channelUsers = channel->second.getUsers();
-	for (std::map<int, User*>::const_iterator it = channelUsers.begin(); it != channelUsers.end(); ++it) {
-		sendData(it->first, topicMsg);
-	}
+	msgAllUsers(params[1],topicMsg);
 
 	std::cout << "Debug: TOPIC command completed successfully" << std::endl;
 }

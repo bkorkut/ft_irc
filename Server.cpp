@@ -4,7 +4,7 @@
 #include "Server.hpp"
 
 // Constructor
-Server::Server() : _serverName(SERVER_NAME), _socketFD(-1), _newSocketFD(-1)
+Server::Server() : _serverName(SERVER_NAME), _socketFD(-1)
 {
 	fptr["NICK"] = &Server::NICK;
 	fptr["USER"] = &Server::USER;
@@ -61,6 +61,8 @@ void Server::acceptClient() {
 		std::cerr << "Socket connection failed" << std::endl;
 		return;
 	}
+	char *client_ip = inet_ntoa(client.sin_addr);
+	setClientIP(client_ip);
 
 	_newPollFD.fd = comFD;
 	_newPollFD.events = POLLIN;
@@ -69,15 +71,6 @@ void Server::acceptClient() {
 	_users.insert(std::make_pair(comFD, User(comFD)));
 
 	std::cout << "Client with ID: " << comFD << " connected" << std::endl;
-}
-
-int Server::findClientIndex(int fd) {
-	std::cout << "findClientIndex with fd " << fd << std::endl;
-	for (size_t i = 0; i < _fds.size(); i++) {
-		if (_fds[i].fd == fd)
-			return i;
-	}
-	return -1;
 }
 
 void	Server::removeClient(int idx) {
