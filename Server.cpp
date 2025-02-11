@@ -191,10 +191,7 @@ void Server::commandParser(int fd, std::string input) {
 }
 
 void Server::setClientIP(const char* ip){
-	if(ip != NULL)
-		_clientIp = std::string(ip);
-	else
-		_clientIp = "0.0.0.0";
+	_clientIp = ip ? std::string(ip) : "0.0.0.0";
 }
 
 const std::string Server::getClientIP() const {
