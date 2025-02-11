@@ -11,6 +11,14 @@ std::string	toLower(std::string str)
 	return str;
 }
 
+// Converts string toUpper
+std::string	toUpper(std::string str)
+{
+	for (std::string::iterator c = str.begin(); c != str.end(); c++)
+		*c = std::toupper(*c);
+	return str;
+}
+
 // Return a pointer to a User if there is a match, NULL if not
 User *findUserWithNick(std::map<int, User> &users, std::string nick)
 {

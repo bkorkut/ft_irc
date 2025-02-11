@@ -66,6 +66,7 @@ class errorException : public std::exception{
 
 // Utilities
 std::string	toLower(std::string str);
+std::string	toUpper(std::string str);
 User		*findUserWithNick(std::map<int, User> &users, std::string nick);
 User		*findUserWithNick(std::map<int, User *> &users, std::string nick);
 std::vector<std::string>	vecSplit(std::string toSplit, std::string septor);

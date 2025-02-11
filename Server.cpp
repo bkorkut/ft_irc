@@ -12,6 +12,7 @@ Server::Server() : _serverName(SERVER_NAME), _socketFD(-1), _newSocketFD(-1)
 	fptr["KICK"] = &Server::KICK;
 	fptr["MODE"] = &Server::MODE;
 	fptr["PART"] = &Server::PART;
+	fptr["QUIT"] = &Server::QUIT;
 	fptr["TOPIC"] = &Server::TOPIC;
 	fptr["INVITE"] = &Server::INVITE;
 	fptr["PRIVMSG"] = &Server::PRIVMSG;
@@ -160,7 +161,7 @@ void Server::commandParser(int fd, std::string input) {
 	std::string others;
 	std::string command;
 
-	std::cout << "\n\033[34m[New Client Message]\033[0m Client ID: " << fd << std::endl;
+	std::cout << "\n\033[34m[New Client Message]\033[0m Client ID: " << fd << "\nMessage:\n" << input << std::endl;
 	command = _users.find(fd)->second.buffer.append(input);
 	commands = vecSplit(command, "\r\n");
 	if (command.size() < 2 || !(command[command.size() - 2 ] == '\r'
@@ -183,7 +184,7 @@ void Server::commandParser(int fd, std::string input) {
 		else
 			params = vecSplit(commands[i], " ");
 
-		if (!params.empty() && fptr.find(params[0]) != fptr.end())
-			(this->*fptr[params[0]])(fd, params);
+		if (!params.empty() && fptr.find(toUpper(params[0])) != fptr.end())
+			(this->*fptr[toUpper(params[0])])(fd, params);
 	}
 }

@@ -3,6 +3,7 @@
 #include <iostream>
 #include "../Server.hpp"
 
+// Parameters: <channel> *( "," <channel> ) [ <Part Message> ]
 void Server::PART(int fd, std::vector<std::string> params) {
 	std::cout << "\033[32m[PART Command]\033[0m" << std::endl;
 	if (params.size() < 2)
