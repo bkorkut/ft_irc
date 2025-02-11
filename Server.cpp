@@ -4,7 +4,7 @@
 #include "Server.hpp"
 
 // Constructor
-Server::Server() : _serverName(SERVER_NAME), _socketFD(-1), _newSocketFD(-1)
+Server::Server() : _serverName(SERVER_NAME), _socketFD(-1)
 {
 	fptr["NICK"] = &Server::NICK;
 	fptr["USER"] = &Server::USER;
@@ -60,6 +60,8 @@ void Server::acceptClient() {
 		std::cerr << "Socket connection failed" << std::endl;
 		return;
 	}
+	char *client_ip = inet_ntoa(client.sin_addr);
+	setClientIP(client_ip);
 
 	_newPollFD.fd = comFD;
 	_newPollFD.events = POLLIN;
@@ -186,4 +188,15 @@ void Server::commandParser(int fd, std::string input) {
 		if (!params.empty() && fptr.find(params[0]) != fptr.end())
 			(this->*fptr[params[0]])(fd, params);
 	}
+}
+
+void Server::setClientIP(const char* ip){
+	if(ip != NULL)
+		_clientIp = std::string(ip);
+	else
+		_clientIp = "0.0.0.0";
+}
+
+const std::string Server::getClientIP() const {
+	return _clientIp;
 }

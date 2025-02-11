@@ -56,7 +56,7 @@ void Server::JOIN(int fd, std::vector<std::string> parameters) {
 	}
 
 	// JOIN mesajını kanaldaki tüm kullanıcılara gönder
-	std::string prefix = user->getNick() + "!" + user->getUsername() + "@" + _serverName;
+	std::string prefix = user->getNick() + "!" + user->getUsername() + "@" + getClientIP();
 	std::string joinMsg = ":" + prefix + " JOIN " + channelName + "\r\n";
 
 	const std::map<int, User*>& channelUsers = channelIt->second.getUsers();

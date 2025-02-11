@@ -36,7 +36,7 @@ typedef unsigned char uint8_t;
 # define ERR_CHANOPRIVSNEEDED(source, channel)			":ft_irc 482 " + source + " " + channel + " :You're not the channel operator\r\n"								//Bir kanalda operatör ayrıcalıkları gerektiğini belirtir.
 
 // Numeric reply Codes
-# define RPL_WELCOME(nick, user, host)					":ft_irc 001 " + nick + " :Welcome to the Internet Relay Network " + nick + "!" + user + "@" + host + "\r\n"	//Clientin servera başarıyla kayıt olduğunu haber verir.
+# define RPL_WELCOME(nick, host)					":ft_irc 001 " + nick + " :Welcome to the Internet Relay Network " + nick + "!" + "@" + host + "\r\n"		//Clientin servera başarıyla kayıt olduğunu haber verir.
 # define RPL_LISTSTART(nick, num_users)					": 321 " + nick + " Channel : "+ num_users + "\r\n"														//LIST komutunun başlangıcını belirtir.
 # define RPL_LIST(source, channel, userCount, topic)	": 322 " + source + " " + channel + " " + userCount + " " + topic + "\r\n"								//Bir kanalın kullanıcı sayısını ve konusunu belirtir.
 # define RPL_LISTEND(source)							"323 " + source + " :End of /LIST\r\n"																	//LIST komutunun sonunu belirtir.

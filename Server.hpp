@@ -7,6 +7,7 @@
 # include <sys/types.h>
 # include <sys/socket.h>
 # include <netinet/in.h>
+#include  <arpa/inet.h>
 # include <iostream>
 # include <stdexcept>
 # include <string>
@@ -30,9 +31,9 @@ class Server
 		// Attributes
 		std::string					_serverName;
 		int							_socketFD;
-		int							_newSocketFD;
 		int							_portNum;
 		std::string					_pswd;
+		std::string					_clientIp;
 		std::vector<struct pollfd>	_fds;
 		struct sockaddr_in			_serverAddress;
 		struct pollfd				_newPollFD;
@@ -64,6 +65,8 @@ class Server
 		void	closeFds();
 		void	run();
 		void	acceptClient();
+		void	setClientIP(const char* ip);
+		const 	std::string getClientIP() const;
 		int		findClientIndex(int fd);
 		void	removeClient(int idx);
 		void	recieveData(int fd);
