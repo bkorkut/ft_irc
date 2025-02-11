@@ -6,9 +6,9 @@ void Server::JOIN(int fd, std::vector<std::string> parameters) {
     if (parameters.size() < 2)
         return sendData(fd, ERR_NEEDMOREPARAMS(std::string("JOIN")));
 
-    std::string channelName = parameters[1];
-    if (channelName[0] != '#')
-        channelName = "#" + channelName;
+	std::string channelName = parameters[1];
+	if (channelName[0] != '#')
+		return sendData(fd, ERR_NOSUCHCHANNEL(_users[fd].getNick(), channelName));
 
     User* user = &_users[fd];
     if (!user->getIsRegistered()) {

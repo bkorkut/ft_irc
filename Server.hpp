@@ -47,6 +47,7 @@ class Server
 		void	PASS(int fd, std::vector<std::string> params);
 		void	KICK(int fd, std::vector<std::string> params);
 		void	MODE(int fd, std::vector<std::string> params);
+		void	PART(int fd, std::vector<std::string> params);
 		void	TOPIC(int fd, std::vector<std::string> params);
 		void	INVITE(int fd, std::vector<std::string> params);
 		void	PRIVMSG(int fd, std::vector<std::string> params);
@@ -63,6 +64,8 @@ class Server
 		void	closeFds();
 		void	run();
 		void	acceptClient();
+		int		findClientIndex(int fd);
+		void	removeClient(int idx);
 		void	recieveData(int fd);
 		void	sendData(int fd, std::string data);
 		void	commandParser(int fd, std::string input);

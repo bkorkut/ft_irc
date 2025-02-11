@@ -18,10 +18,6 @@ void Server::INVITE(int fd, std::vector<std::string> params) {
         targetNick = targetNick.substr(1);
     }
 
-    // Add # prefix if not present
-    if (channelName[0] != '#')
-        channelName = "#" + channelName;
-
     // Find the channel
     std::map<std::string, Channel>::iterator channelIt = _channels.find(channelName);
     if (channelIt == _channels.end())

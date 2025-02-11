@@ -16,7 +16,7 @@ void	Server::TOPIC(int fd, std::vector<std::string> params)
 	// Find the channel
 	std::map<std::string, Channel>::iterator channel = _channels.find(params[1]);
 	if (channel == _channels.end())
-		return sendData(fd, ERR_NOSUCHCHANNEL(_serverName, params[1]));
+		return sendData(fd, ERR_NOSUCHCHANNEL(_users[fd].getNick(), params[1]));
 
 	// If no topic parameter is provided, return current topic
 	if (params.size() < 3)
