@@ -14,7 +14,7 @@ check if a "hostname" REPLY is necessarry or nick is sufficient in irc
 ✅ Add QUIT
 ✅ part #a,#b -> Only leaves channel a and not b
 
-
+nc is currently not working NICK PASS or other commands is not interpreted as commands
 join #a,#b -> Needs to create two different channels, creates one channel as #a,#b
 
 Check password if +k flag is set in JOIN
