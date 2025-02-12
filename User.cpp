@@ -37,6 +37,14 @@ void User::setUsername(std::string newUsername) {
 	username = newUsername;
 }
 
+void User::setClientIP(const char* ip){
+	_clientIp = ip ? std::string(ip) : "0.0.0.0";
+}
+
+const std::string User::getClientIP() const {
+	return _clientIp;
+}
+
 void User::setRealname(std::string newRealname) {
 	realname = newRealname;
 }

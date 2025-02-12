@@ -61,14 +61,14 @@ void Server::acceptClient() {
 		std::cerr << "Socket connection failed" << std::endl;
 		return;
 	}
-	char *client_ip = inet_ntoa(client.sin_addr);
-	setClientIP(client_ip);
 
 	_newPollFD.fd = comFD;
 	_newPollFD.events = POLLIN;
 	_newPollFD.revents = 0;
 	_fds.push_back(_newPollFD);
 	_users.insert(std::make_pair(comFD, User(comFD)));
+	char *client_ip = inet_ntoa(client.sin_addr);
+	_users[comFD].setClientIP(client_ip);
 
 	std::cout << "Client with ID: " << comFD << " connected" << std::endl;
 }

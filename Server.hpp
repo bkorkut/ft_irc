@@ -33,7 +33,6 @@ class Server
 		int							_socketFD;
 		int							_portNum;
 		std::string					_pswd;
-		std::string					_clientIp;
 		std::vector<struct pollfd>	_fds;
 		struct sockaddr_in			_serverAddress;
 		struct pollfd				_newPollFD;
@@ -66,9 +65,7 @@ class Server
 		void	closeFds();
 		void	run();
 		void	acceptClient();
-		void	setClientIP(const char* ip);
 		void	msgAllUsers(const std::string& channelName, const std::string& msg);
-		const 	std::string getClientIP() const;
 		int		findClientIndex(int fd);
 		void	removeClient(int idx);
 		void	recieveData(int fd);

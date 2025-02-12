@@ -16,11 +16,3 @@ int Server::findClientIndex(int fd) {
 	}
 	return -1;
 }
-
-void Server::setClientIP(const char* ip){
-	_clientIp = ip ? std::string(ip) : "0.0.0.0";
-}
-
-const std::string Server::getClientIP() const {
-	return _clientIp;
-}

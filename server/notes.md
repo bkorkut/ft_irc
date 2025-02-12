@@ -5,11 +5,11 @@
 ✅ Fix auto # assumption for CHANNELS
 
 ✅ TOUPPER (komutlar küçük yazınca gitmiyor) (PRIVMSG bir standart hexchat komutu değilmiş)
-fix/add IP in RPL_WELCOME
+✅ fix/add IP in RPL_WELCOME
 PART needs to send feedback to hexchat/client about user leaving to other users
 ✅ fix NICK's reply by adding a :prefix
 check if a "hostname" REPLY is necessarry or nick is sufficient in irc
-make function sendMsgToAll()
+✅ make function msgAllUsers()
 ✅ fix netcat ctrl^C (check for POLLHUP) add server.removeUser()
 ✅ Add QUIT
 

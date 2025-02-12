@@ -4,6 +4,9 @@
 #include "../Server.hpp"
 
 // Parameters: <channel> *( "," <channel> ) [ <Part Message> ]
+// to send :via3!~via@159.146.29.219 PART #41
+//         :<nickname>!<username>@<host>
+// :via3!~via@159.146.29.219 PART #41 :I'm done
 void Server::PART(int fd, std::vector<std::string> params) {
 	std::cout << "\033[32m[PART Command]\033[0m" << std::endl;
 	if (params.size() < 2)
@@ -39,9 +42,15 @@ void Server::PART(int fd, std::vector<std::string> params) {
 		if (params.size() < 3)
 		{
 			std::string partMsg = ":" + _users[fd].getNick() + " PART " + params[1] + " :Leaving\rn";
+
 			return (sendData(fd, partMsg));
 		}
 		std::string partMsg = ":" + _users[fd].getNick() + " PART " + params[1] + " " + params[2] + "\r\n";
+
+		// notifiying all users that the current user left
+		std::string usersGet = ":" + _users[fd].getNick() + "!" + _users[fd].getUsername() + "@" + _users[fd].getClientIP() + " " + params[0] + " " + params[1] + " " + params[2] + "\r\n";
+		msgAllUsers(params[1],usersGet);
+
 		return (sendData(fd, partMsg));
 	}
 }
