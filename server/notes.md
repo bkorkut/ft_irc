@@ -12,11 +12,10 @@ check if a "hostname" REPLY is necessarry or nick is sufficient in irc
 ✅ make function msgAllUsers()
 ✅ fix netcat ctrl^C (check for POLLHUP) add server.removeUser()
 ✅ Add QUIT
+✅ part #a,#b -> Only leaves channel a and not b
 
 
 join #a,#b -> Needs to create two different channels, creates one channel as #a,#b
-part #a,#b -> Only leaves channel a and not b
-
 
 Check password if +k flag is set in JOIN
 Fix issue where changing channel limit (mode +l) jams server and does not enable users join

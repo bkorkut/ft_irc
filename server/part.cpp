@@ -24,6 +24,7 @@ void Server::PART(int fd, std::vector<std::string> params) {
 			if (params.size() < 3) {
 				params.push_back(" :Leaving\rn");
 			}
+			// notifiying all users that the current user left
 			std::string usersGet = ":" + _users[fd].getNick() + "!" + _users[fd].getUsername() + "@" + _users[fd].getClientIP() + " " + params[0] + " " + *it + " " + params[2] + "\r\n";
 			msgAllUsers(*it,usersGet);
 
@@ -43,7 +44,6 @@ void Server::PART(int fd, std::vector<std::string> params) {
 			params.push_back(" :Leaving\rn");
 		}
 
-		// notifiying all users that the current user left
 		std::string usersGet = ":" + _users[fd].getNick() + "!" + _users[fd].getUsername() + "@" + _users[fd].getClientIP() + " " + params[0] + " " + params[1] + " " + params[2] + "\r\n";
 		msgAllUsers(params[1],usersGet);
 
