@@ -4,9 +4,8 @@
 #include "../Server.hpp"
 
 // Parameters: <channel> *( "," <channel> ) [ <Part Message> ]
-// to send :via3!~via@159.146.29.219 PART #41
-//         :<nickname>!<username>@<host>
-// :via3!~via@159.146.29.219 PART #41 :I'm done
+// others recieve :via3!~via@159.146.29.219 PART #41 :I'm done
+//                :<nickname>!<username>@<host>
 void Server::PART(int fd, std::vector<std::string> params) {
 	std::cout << "\033[32m[PART Command]\033[0m" << std::endl;
 	if (params.size() < 2)
@@ -22,13 +21,14 @@ void Server::PART(int fd, std::vector<std::string> params) {
 			if (!channel->second.hasUser(fd))
 				return sendData(fd, ERR_NOTONCHANNEL(_users[fd].getNick(), *it));
 			channel->second.removeUser(fd);
-			if (params.size() < 3)
-			{
-				std::string partMsg = ":" + _users[fd].getNick() + " PART " + *it + " :Leaving\rn";
-				return (sendData(fd, partMsg));
+			if (params.size() < 3) {
+				params.push_back(" :Leaving\rn");
 			}
+			std::string usersGet = ":" + _users[fd].getNick() + "!" + _users[fd].getUsername() + "@" + _users[fd].getClientIP() + " " + params[0] + " " + *it + " " + params[2] + "\r\n";
+			msgAllUsers(*it,usersGet);
+
 			std::string partMsg = ":" + _users[fd].getNick() + " PART " + *it + " " + params[2] + "\r\n";
-			return (sendData(fd, partMsg));
+			sendData(fd, partMsg);
 		}
 	}
 	else
@@ -39,18 +39,15 @@ void Server::PART(int fd, std::vector<std::string> params) {
 		if (!channel->second.hasUser(fd))
 			return sendData(fd, ERR_NOTONCHANNEL(_users[fd].getNick(), params[1]));
 		channel->second.removeUser(fd);
-		if (params.size() < 3)
-		{
-			std::string partMsg = ":" + _users[fd].getNick() + " PART " + params[1] + " :Leaving\rn";
-
-			return (sendData(fd, partMsg));
+		if (params.size() < 3) {
+			params.push_back(" :Leaving\rn");
 		}
-		std::string partMsg = ":" + _users[fd].getNick() + " PART " + params[1] + " " + params[2] + "\r\n";
 
 		// notifiying all users that the current user left
 		std::string usersGet = ":" + _users[fd].getNick() + "!" + _users[fd].getUsername() + "@" + _users[fd].getClientIP() + " " + params[0] + " " + params[1] + " " + params[2] + "\r\n";
 		msgAllUsers(params[1],usersGet);
 
+		std::string partMsg = ":" + _users[fd].getNick() + " PART " + params[1] + " " + params[2] + "\r\n";
 		return (sendData(fd, partMsg));
 	}
 }
