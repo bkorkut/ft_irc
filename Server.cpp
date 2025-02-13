@@ -73,10 +73,11 @@ void Server::acceptClient() {
 	std::cout << "Client with ID: " << comFD << " connected" << std::endl;
 }
 
-void	Server::removeClient(int idx) {
-	std::cout << "removeClient fd " << _fds[idx].fd << std::endl;
-	close(_fds[idx].fd);
-	std::map<int, User>::iterator user = _users.find(_fds[idx].fd);
+void	Server::removeClient(int fd) {
+	std::cout << "removeClient fd: " << fd << std::endl;
+	close(fd);
+
+	std::map<int, User>::iterator user = _users.find(fd);
 	if (user != _users.end())
 	{
 		std::vector<std::string> channels = user->second.getJoinedChannels();
@@ -84,21 +85,31 @@ void	Server::removeClient(int idx) {
 		{
 			std::map<std::string, Channel>::iterator channel = _channels.find(*it);
 			if (channel != _channels.end())
+			{
 				channel->second.removeUser(user->second.getId());
+				if (channel->second.getUsers().empty())
+				{
+					std::cout << "Deleting channel " << channel->second.getName() << std::endl;
+					_channels.erase(channel);
+				}
+			}
 		}
 		_users.erase(user);
 	}
-	_fds.erase(_fds.begin() + idx);
+	int idx = findClientIndex(fd);
+	if (idx != -1)
+		_fds.erase(_fds.begin() + idx);
 }
 
 void Server::recieveData(int fd) {
 	char buf[512];
 	ssize_t bytes = recv(fd, buf, sizeof(buf) - 1, 0);
 
-	if (bytes <= 0) {
-		int idx = findClientIndex(fd);
-		if (idx != -1)
-			removeClient(idx);
+	if (bytes <= 0)
+	{
+		std::vector<std::string> quit;
+		quit.push_back("QUIT");
+		QUIT(fd, quit);
 	}
 	else if (bytes > 0) {
 		buf[bytes] = '\0';
@@ -151,7 +162,11 @@ void Server::run() {
 				readyStatus--;
 			}
 			else if (_fds[i].revents & POLLHUP)
-				removeClient(i);
+			{
+				std::vector<std::string> quit;
+				quit.push_back("QUIT");
+				QUIT(_fds[i].fd, quit);
+			}
 		}
 	}
 }

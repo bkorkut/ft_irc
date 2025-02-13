@@ -67,7 +67,7 @@ class Server
 		void	acceptClient();
 		void	msgAllUsers(const std::string& channelName, const std::string& msg);
 		int		findClientIndex(int fd);
-		void	removeClient(int idx);
+		void	removeClient(int fd);
 		void	recieveData(int fd);
 		void	sendData(int fd, std::string data);
 		void	commandParser(int fd, std::string input);

@@ -18,7 +18,8 @@ check if a "hostname" REPLY is necessarry or nick is sufficient in irc
 ✅ Add a mechanism to DELETE CHANNELS if there is no user left in commands PART and QUIT
 	(added joined channels list to users, added and removed channels from list with join and part,
 	added Channel::removeUser() to setver::removeClient() by traversing users channel list)
-Change server's general user delete section to call QUIT for deleting users (so that it deletes channels too and sends quit messages)
+✅ Change server's general user delete section to call QUIT for deleting users (so that it deletes channels too and sends quit messages)
+	(call QUIT everywhere, change removeClient to work with a fd instead of idx, fixes segfault occurring in msgToAll when quiting a with a channel only you are in)
 
 Add password check for mode +k in JOIN
 Fix issue where changing channel limit (MODE +l) jams server and does not enable users JOIN

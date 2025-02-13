@@ -2,9 +2,12 @@
 
 void Server::msgAllUsers(const std::string& channelName, const std::string& msg){
 	std::map<std::string, Channel>::iterator channelIt = _channels.find(channelName);
-	const std::map<int, User*>& channelUsers = channelIt->second.getUsers();
-	for (std::map<int, User*>::const_iterator it = channelUsers.begin(); it != channelUsers.end(); ++it) {
-		sendData(it->first, msg);
+	if (channelIt != _channels.end())
+	{
+		const std::map<int, User*>& channelUsers = channelIt->second.getUsers();
+		for (std::map<int, User*>::const_iterator it = channelUsers.begin(); it != channelUsers.end(); ++it) {
+			sendData(it->first, msg);
+		}
 	}
 }
 
