@@ -1,10 +1,6 @@
 #include "User.hpp"
 #include "iostream"
 
-User::User(void) : id(-1), isAuthenticated(false), isRegistered(false) {}
-
-User::User(int fd) : id(fd), isAuthenticated(false), isRegistered(false) {}
-
 const std::string& User::getNick() const {
 	return nick;
 }
@@ -15,6 +11,10 @@ const std::string& User::getUsername() const {
 
 const std::string& User::getRealname() const {
 	return realname;
+}
+
+const std::string User::getFullClientId() const{
+	return nick + "!" + username + "@" + _clientIp;
 }
 
 bool User::getIsAuthenticated() const {

@@ -30,8 +30,7 @@ void Server::USER(int fd, std::vector<std::string> params) {
 
 	// Kayıt durumunu kontrol et
 	if (_users[fd].checkRegistration()) {
-		std::string prefix = _users[fd].getUsername() + "@" + _users[fd].getClientIP();
-		sendData(fd, RPL_WELCOME(_users[fd].getNick(), prefix));
+		sendData(fd, RPL_WELCOME(_users[fd].getNick(), _users[fd].getFullClientId()));
 		std::cout << "Debug: Registration completed successfully" << std::endl;
 	} else {
 		std::cout << "Debug: Registration failed. Current state:" << std::endl;

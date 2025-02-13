@@ -71,9 +71,7 @@ void Server::KICK(int fd, std::vector<std::string> params) {
 	}
 
 	// KICK mesajını oluştur
-	std::string kickMsg = MSG_KICK(_users[fd].getNick() + "!" + _users[fd].getUsername() + "@" + _serverName,
-								  channelName, targetNick, reason);
-
+	std::string kickMsg = MSG_KICK(_users[fd].getFullClientId(), channelName, targetNick, reason);
 	std::cout << "Debug: Sending kick message: " << kickMsg;
 
 	// Kanaldaki herkese KICK mesajını gönder

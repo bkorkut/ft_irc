@@ -37,8 +37,8 @@ private:
 
 public:
 	// Constructors
-	Channel() {}
-	Channel(const std::string& channelName) : name(channelName) {}
+	Channel() : modeFlags(0) {}
+	Channel(const std::string& channelName) : name(channelName), modeFlags(0) {}
 
 	// mode management
 	int			getLimit();

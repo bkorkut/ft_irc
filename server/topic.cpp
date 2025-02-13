@@ -41,9 +41,7 @@ void	Server::TOPIC(int fd, std::vector<std::string> params)
 		channel->second.setTopic(params[2]);
 
 	// Notify all users in the channel about the topic change
-	std::string prefix = _users[fd].getNick() + "!" + _users[fd].getUsername() + "@" + _serverName;
-	std::string topicMsg = ":" + prefix + " TOPIC " + channel->second.getName() + " :" + channel->second.getTopic() + "\r\n";
-
+	std::string topicMsg = ":" + _users[fd].getFullClientId() + " TOPIC " + channel->second.getName() + " :" + channel->second.getTopic() + "\r\n";
 	msgAllUsers(params[1],topicMsg);
 
 	std::cout << "Debug: TOPIC command completed successfully" << std::endl;

@@ -44,8 +44,7 @@ void Server::INVITE(int fd, std::vector<std::string> params) {
 	channelIt->second.addInvite(targetUser->getId());
 
 	// Create and send the INVITE message
-	std::string prefix = _users[fd].getNick() + "!" + _users[fd].getUsername() + "@" + _serverName;
-	std::string inviteMsg = ":" + prefix + " INVITE " + targetNick + " " + channelName + "\r\n";
+	std::string inviteMsg = ":" + _users[fd].getFullClientId() + " INVITE " + targetNick + " " + channelName + "\r\n";
 
 	// Send to target user
 	sendData(targetUser->getId(), inviteMsg);

@@ -10,7 +10,6 @@ void Server::PRIVMSG(int fd, std::vector<std::string> params) {
 
 	std::string target = params[1];
 	std::string message = params[2];
-	std::string prefix = _users[fd].getNick() + "!" + _users[fd].getUsername() + "@" + _serverName;
 
 	if (target[0] == '#') {
 		std::map<std::string, Channel>::iterator channel = _channels.find(target);
@@ -23,7 +22,7 @@ void Server::PRIVMSG(int fd, std::vector<std::string> params) {
 
 		// Kanaldaki tüm kullanıcılara mesajı gönder (gönderen hariç)
 		const std::map<int, User*>& users = channel->second.getUsers();
-		std::string fullMessage = ":" + prefix + " PRIVMSG " + target + " :" + message + "\r\n";
+		std::string fullMessage = ":" + _users[fd].getFullClientId() + " PRIVMSG " + target + " :" + message + "\r\n";
 
 		for (std::map<int, User*>::const_iterator it = users.begin(); it != users.end(); ++it) {
 			if (it->first != fd) { // Gönderen hariç herkese
@@ -36,7 +35,7 @@ void Server::PRIVMSG(int fd, std::vector<std::string> params) {
 		User *user = findUserWithNick(_users, target);
 		if (!user)
 			return sendData(fd, ERR_NOSUCHNICK(_users[fd].getNick(), target));
-		std::string fullMessage = ":" + prefix + " PRIVMSG " + target + " :" + message + "\r\n";
+		std::string fullMessage = ":" + _users[fd].getFullClientId() + " PRIVMSG " + target + " :" + message + "\r\n";
 		sendData(user->getId(), fullMessage);
 	}
 }
