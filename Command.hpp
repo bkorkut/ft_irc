@@ -37,20 +37,20 @@ typedef unsigned char uint8_t;
 
 // Numeric reply Codes
 # define RPL_WELCOME(nick, user)						":ft_irc 001 " + nick + " :Welcome to the Internet Relay Network " + user + "\r\n"		//Clientin servera başarıyla kayıt olduğunu haber verir.
-# define RPL_LISTSTART(nick, num_users)					": 321 " + nick + " Channel : "+ num_users + "\r\n"										//LIST komutunun başlangıcını belirtir.
-# define RPL_LIST(source, channel, userCount, topic)	": 322 " + source + " " + channel + " " + userCount + " " + topic + "\r\n"				//Bir kanalın kullanıcı sayısını ve konusunu belirtir.
-# define RPL_LISTEND(source)							"323 " + source + " :End of /LIST\r\n"													//LIST komutunun sonunu belirtir.
-# define RPL_CHANNELMODEIS(target, channel, mode)		":ft_irc 324 " + target + " " + channel + " " + mode + "\r\n"							//LIST komutunun sonunu belirtir.
+// # define RPL_LISTSTART(nick, num_users)					":ft_irc 321 " + nick + " Channel : "+ num_users + "\r\n"										//LIST komutunun başlangıcını belirtir.
+// # define RPL_LIST(source, channel, userCount, topic)	":ft_irc 322 " + source + " " + channel + " " + userCount + " " + topic + "\r\n"				//Bir kanalın kullanıcı sayısını ve konusunu belirtir.
+// # define RPL_LISTEND(source)							":ft_irc 323 " + source + " :End of /LIST\r\n"													//LIST komutunun sonunu belirtir.
+# define RPL_CHANNELMODEIS(target, channel, mode)		":ft_irc 324 " + target + " " + channel + " " + mode + "\r\n"
 # define RPL_NOTOPIC(source, channel)					":ft_irc 331 " + source + " " + channel + " :No topic is set" + "\r\n"					//Bir kanalda konu belirlenmediğini bildirir.
 # define RPL_TOPIC(source, channel, topic)				":ft_irc 332 " + source + " " + channel + " " + topic + "\r\n"							//Bir kanaldaki mevcut konuyu belirtir.
-# define RPL_NAMREPLY(source, channel, nickList)		": 353 " + source + " = " + channel + " :" + nickList + "\r\n"							//Bir kanaldaki kullanıcıların listesini içerir.
-# define RPL_ENDOFNAMES(source, channel)				"366 " + source + " " + channel + " :End of /NAMES list." + "\r\n"						//Bir kanalın kullanıcı listesinin sonunu belirtir.
+# define RPL_NAMREPLY(source, channel, nickList)		":ft_irc 353 " + source + " = " + channel + " :" + nickList + "\r\n"					//Bir kanaldaki kullanıcıların listesini içerir.
+# define RPL_ENDOFNAMES(source, channel)				":ft_irc 366 " + source + " " + channel + " :End of /NAMES list.\r\n"					//Bir kanalın kullanıcı listesinin sonunu belirtir.
 
 // Messages
-# define MSG_JOIN(source, channel)						":" + source + " JOIN :" + channel + "\r\n"												//Bir kullanıcının bir kanala katıldığını belirtir.
+// # define MSG_JOIN(source, channel)						":" + source + " JOIN :" + channel + "\r\n"												//Bir kullanıcının bir kanala katıldığını belirtir.
 # define MSG_KICK(source, channel, target, reason)		":" + source + " KICK " + channel + " " + target + " :" + reason + "\r\n"				//Bir kullanıcının bir kanaldan atıldığını belirtir.
-# define MSG_PART(prefix, channel, message)				":" + prefix + " PART " + channel + " :" + message + "\r\n"								//Bir kullanıcının bir kanaldan ayrıldığını belirtir.
-# define MSG_QUIT(source, message)						" :" + source + " QUIT :Quit: " + message + "\r\n"										//Bir kullanıcının sunucudan ayrıldığını bildirir.
+// # define MSG_PART(prefix, channel, message)				":" + prefix + " PART " + channel + " :" + message + "\r\n"								//Bir kullanıcının bir kanaldan ayrıldığını belirtir.
+// # define MSG_QUIT(source, message)						":" + source + " QUIT :Quit: " + message + "\r\n"										//Bir kullanıcının sunucudan ayrıldığını bildirir.
 
 // General exception for messages
 class errorException : public std::exception{
