@@ -6,7 +6,7 @@
 ✅ join #a,#b -> Needs to create two different channels, creates one channel as #a,#b
 	(added vecSplit for targets)
 
-PART needs to send feedback to hexchat/client about user leaving to other users
+✅ PART needs to send feedback to hexchat/client about user leaving to other users
 check if a "hostname" REPLY is necessarry or nick is sufficient in irc
 
 ✅ Fix JOIN's auto assumption mode +i for channels
@@ -21,6 +21,8 @@ check if a "hostname" REPLY is necessarry or nick is sufficient in irc
 ✅ Change server's general user delete section to call QUIT for deleting users (so that it deletes channels too and sends quit messages)
 	(call QUIT everywhere, change removeClient to work with a fd instead of idx, fixes segfault occurring in msgToAll when quiting a with a channel only you are in)
 
-Add password check for mode +k in JOIN
+✅ Add password check for mode +k in JOIN
+✅ Fix MODE to show channel key too
+	(changed the inside of Channel::getModes)
 Fix issue where changing channel limit (MODE +l) jams server and does not enable users JOIN
 Check if setting MODE +l 2 in a channel that has 3 users causes issues

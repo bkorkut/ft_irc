@@ -123,10 +123,7 @@ void Server::MODE(int fd, std::vector<std::string> params) {
 
 	// If no mode parameter, return current modes
 	if (params.size() < 3) {
-		std::string modes = channel->second.getModes();
-		if (modes.empty())
-			return sendData(fd, RPL_CHANNELMODEIS(_users[fd].getNick(), params[1], ":0"));
-		return sendData(fd, RPL_CHANNELMODEIS(_users[fd].getNick(), params[1], modes));
+		return sendData(fd, RPL_CHANNELMODEIS(_users[fd].getNick(), params[1], channel->second.getModes()));
 	}
 
 	// Check if user is operator

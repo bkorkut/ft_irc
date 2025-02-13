@@ -1,5 +1,6 @@
 #include "../Server.hpp"
 
+// Parameters: ( <channel> *( "," <channel> ) [ <key> *( "," <key> ) ] ) / "0"
 void Server::JOIN(int fd, std::vector<std::string> parameters) {
 	std::cout << "\033[32m[JOIN Command]\033[0m" << std::endl;
 
@@ -12,6 +13,11 @@ void Server::JOIN(int fd, std::vector<std::string> parameters) {
 		return ;
 	}
 
+	size_t	passidx = 0;
+	std::vector<std::string> passes;
+	if (!(parameters.size() < 3))
+		passes = vecSplit(parameters[2], ",");
+	std::cout << "Debug: Passes size" << passes.size() << std::endl;
 	std::vector<std::string> channels = vecSplit(parameters[1], ",");
 	for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); ++it)
 	{
@@ -30,6 +36,8 @@ void Server::JOIN(int fd, std::vector<std::string> parameters) {
 			// Kullanıcı içindeyse
 			if (channelIt->second.hasUser(fd)) {
 				std::cout << "Debug: User already in channel" << std::endl;
+				if (channelIt->second.hasFlag(B_PASSKEY))
+					passidx++;
 				continue ;
 			}
 
@@ -45,12 +53,21 @@ void Server::JOIN(int fd, std::vector<std::string> parameters) {
 			}
 
 			// İnvite-only modundaysa kontrol et
-			if (channelIt->second.hasFlag(B_INVONLY)) {
-				if (!channelIt->second.isInvited(fd)) {
-					std::cout << "Debug: Channel is invite-only and user is not invited" << std::endl;
-					sendData(fd, ERR_INVITEONLYCHAN(user->getNick(), channelName));
+			if (channelIt->second.hasFlag(B_INVONLY) && !channelIt->second.isInvited(fd)) {
+				std::cout << "Debug: Channel is invite-only and user is not invited" << std::endl;
+				sendData(fd, ERR_INVITEONLYCHAN(user->getNick(), channelName));
+				continue ;
+			}
+
+			if (channelIt->second.hasFlag(B_PASSKEY)) {
+				if ((passes.size() <= passidx) || (channelIt->second.getPassword() != passes[passidx] && ++passidx))
+				{
+					std::cout << "Debug: Channel password is wrong" << std::endl;
+					sendData(fd, ERR_BADCHANNELKEY(user->getNick(), channelName));
 					continue ;
 				}
+				else
+					passidx++;
 			}
 
 			// Mevcut kanala katıl

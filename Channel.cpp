@@ -43,23 +43,27 @@ uint8_t Channel::getFlags(void){
 
 std::string	Channel::getModes(void){
 	std::string	ret("+");
+	std::string	pass;
+	std::string	limit;
 	if (this->modeFlags & B_INVONLY)
 		ret += INVONLY;
 	if (this->modeFlags & B_CHTOPIC)
 		ret += CHTOPIC;
 	if (this->modeFlags & B_PASSKEY)
+	{
 		ret += PASSKEY;
+		pass = this->getPassword();
+	}
 	if (this->modeFlags & B_LIMIT)
 	{
 		ret += LIMIT;
-		ret += " ";
 		std::stringstream ss;
 		ss << this->limit;
-		ret += ss.str();
+		limit += ss.str();
 	}
 	if (ret != "+")
-		return ret;
-	return ("");
+		return ret + (!pass.empty() ? " " + pass : "") + (!limit.empty() ? " " + limit : "");
+	return (":0");
 }
 
 bool Channel::hasFlag(ChannelFlags flag){
