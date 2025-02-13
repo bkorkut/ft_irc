@@ -30,8 +30,8 @@ private:
 	std::string				topic;
 	std::string				password;
 	int						limit;
-	std::set<int>			operators;
 	std::map<int, User *>	users;
+	std::set<int>			operators;
 	std::set<int>			invitedUsers;  // Davet edilen kullanıcıların listesi
 	uint8_t					modeFlags;
 

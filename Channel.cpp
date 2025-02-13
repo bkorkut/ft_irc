@@ -132,6 +132,7 @@ void Channel::addUser(User* user, bool isOperator) {
 	users[user->getId()] = user;
 	if (isOperator)
 		toggleOperator(user->getId());
+	user->joinChannel(this->getName());
 }
 
 bool Channel::hasUser(int fd) const {
@@ -145,6 +146,7 @@ bool Channel::hasUser(std::string nick){
 }
 
 void Channel::removeUser(int fd) {
+	users[fd]->partChannel(this->getName());
 	users.erase(fd);
 	operators.erase(fd);
 }

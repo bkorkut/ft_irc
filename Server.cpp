@@ -78,7 +78,16 @@ void	Server::removeClient(int idx) {
 	close(_fds[idx].fd);
 	std::map<int, User>::iterator user = _users.find(_fds[idx].fd);
 	if (user != _users.end())
+	{
+		std::vector<std::string> channels = user->second.getJoinedChannels();
+		for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); ++it)
+		{
+			std::map<std::string, Channel>::iterator channel = _channels.find(*it);
+			if (channel != _channels.end())
+				channel->second.removeUser(user->second.getId());
+		}
 		_users.erase(user);
+	}
 	_fds.erase(_fds.begin() + idx);
 }
 

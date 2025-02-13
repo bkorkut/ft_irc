@@ -33,5 +33,12 @@ void Server::PART(int fd, std::vector<std::string> params) {
 
 		// remove user from channel
 		channel->second.removeUser(fd);
+
+		// delete channel if its empty
+		if (channel->second.getUsers().empty())
+		{
+			std::cout << "Deleting channel " << channel->second.getName() << std::endl;
+			_channels.erase(channel);
+		}
 	}
 }

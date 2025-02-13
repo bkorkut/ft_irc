@@ -1,6 +1,8 @@
+#include <algorithm>
 #include "User.hpp"
 #include "iostream"
 
+// Getters
 const std::string& User::getNick() const {
 	return nick;
 }
@@ -29,6 +31,7 @@ int User::getId() const {
 	return id;
 }
 
+// Setters
 void User::setNick(std::string newNick) {
 	nick = newNick;
 }
@@ -53,6 +56,22 @@ void User::setPassword(std::string newPassword) {
 	password = newPassword;
 }
 
+// Channel methods
+void	User::joinChannel(std::string channel){
+	joinedChannels.push_back(channel);
+}
+
+void	User::partChannel(std::string channel){
+	std::vector<std::string>::iterator it = std::find(joinedChannels.begin(), joinedChannels.begin(), channel);
+		if (it != joinedChannels.end())
+			joinedChannels.erase(it);
+}
+
+std::vector<std::string> User::getJoinedChannels() const{
+	return joinedChannels;
+}
+
+// Authentication methods
 bool User::authenticate(const std::string& serverPassword) {
 	if (password == serverPassword) {
 		isAuthenticated = true;

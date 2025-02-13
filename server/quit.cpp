@@ -6,10 +6,25 @@ void Server::QUIT(int fd, std::vector<std::string> params) {
 	int idx = findClientIndex(fd);
 	if (idx != -1)
 	{
+		std::string prefix;
+		std::vector<std::string> channels;
+		std::map<int, User>::iterator user = _users.find(fd);
+
+		if (user != _users.end())
+		{
+			std::cout << "Debug: about to get user info" << std::endl;
+			prefix = _users[fd].getFullClientId();
+			channels = _users[fd].getJoinedChannels();
+			std::cout << "Debug: channels are " << !channels.empty() << std::endl;
+		}
 		removeClient(idx);
-		// CHANGE HERE to send message to all users except the one leaving
-		if (params.size() < 2)
-			return (sendData(fd, _users[fd].getFullClientId() + " QUIT :Client Quit\r\n"));
-		return (sendData(fd, _users[fd].getFullClientId() + " QUIT " + params[1] + "\r\n"));
+		if (!channels.empty())
+		{
+			std::cout << "Debug: about to send quit message" << std::endl;
+			if (params.size() < 2)
+				params.push_back(" :Client Quit");
+			for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); ++it)
+				msgAllUsers(*it, ":" + prefix + " QUIT " + params[1] + "\r\n");
+		}
 	}
 }
