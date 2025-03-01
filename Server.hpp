@@ -20,6 +20,7 @@
 # include <csignal>
 # include "Channel.hpp"
 # include "Command.hpp"
+# include "Hangman.hpp"
 
 # define NICKSET "abcdefghiklmnoprstuvwxyz1234567890[]{}|\\"
 # define CH_MODESET "itlko"
@@ -40,6 +41,11 @@ class Server
 		std::map<int, User>			_users;
 		std::map<std::string, Channel> _channels;
 		std::map<std::string, void (Server::*)(int fd, std::vector<std::string> parameters)> fptr;
+		std::map<int, HangmanGame> _hangmanGames;  // Her kullanıcı için bir oyun instance'ı
+		void HANGMAN(int fd, std::vector<std::string> params);
+		void sendHangmanArt(int fd, const std::string& channel);
+		void GUESS(int fd, std::vector<std::string> params);
+
 
 		// Member functions
 		void	NICK(int fd, std::vector<std::string> params);
