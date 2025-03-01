@@ -22,7 +22,7 @@
 # include "Command.hpp"
 # include "Hangman.hpp"
 
-# define NICKSET "abcdefghiklmnoprstuvwxyz1234567890[]{}|\\"
+# define NICKSET "abcdefghiklmnopqrstuvwxyz1234567890[]{}|\\"
 # define CH_MODESET "itlko"
 # define SERVER_NAME "ft_irc"
 
