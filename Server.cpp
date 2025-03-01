@@ -74,22 +74,25 @@ void Server::acceptClient() {
 }
 
 void	Server::removeClient(int fd) {
-	std::cout << "removeClient fd: " << fd << std::endl;
+	std::cout << "\033[31mREMOVE CLIENT fd: " << fd << "\033[0m" << std::endl;
 	close(fd);
 
 	std::map<int, User>::iterator user = _users.find(fd);
 	if (user != _users.end())
 	{
+		std::cout << "user " << user->second.getNick() << " is in servers user list" << std::endl;
 		std::vector<std::string> channels = user->second.getJoinedChannels();
 		for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); ++it)
 		{
+			std::cout << "searching for channel in servers channel list" << *it << std::endl;
 			std::map<std::string, Channel>::iterator channel = _channels.find(*it);
 			if (channel != _channels.end())
 			{
+				std::cout << "found channel, removing user " << user->second.getNick() << " from it" << std::endl;
 				channel->second.removeUser(user->second.getId());
 				if (channel->second.getUsers().empty())
 				{
-					std::cout << "Deleting channel " << channel->second.getName() << std::endl;
+					std::cout << "Deleting channel " << channel->second.getName() << " because its empty now" << std::endl;
 					_channels.erase(channel);
 				}
 			}
