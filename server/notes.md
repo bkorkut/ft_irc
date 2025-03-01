@@ -24,5 +24,10 @@ check if a "hostname" REPLY is necessarry or nick is sufficient in irc
 ✅ Add password check for mode +k in JOIN
 ✅ Fix MODE to show channel key too
 	(changed the inside of Channel::getModes)
-Fix issue where changing channel limit (MODE +l) jams server and does not enable users JOIN
-Check if setting MODE +l 2 in a channel that has 3 users causes issues
+	Fix issue where changing channel limit (MODE +l) jams server and does not enable users JOIN (ı dont understand _ahmet)
+	Check if setting MODE +l 2 in a channel that has 3 users causes issues (I checked but I hope there isn't anything I didn't see. _ahmet)
+
+
+changes I made;
+
+hangman game now finished. 

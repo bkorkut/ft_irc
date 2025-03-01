@@ -17,6 +17,8 @@ Server::Server() : _serverName(SERVER_NAME), _socketFD(-1)
 	fptr["INVITE"] = &Server::INVITE;
 	fptr["PRIVMSG"] = &Server::PRIVMSG;
 	fptr["JOIN"] = &Server::JOIN;
+	fptr["HANGMAN"] = &Server::HANGMAN;
+	fptr["GUESS"] = &Server::GUESS;
 }
 
 // Destructor
@@ -204,4 +206,92 @@ void Server::commandParser(int fd, std::string input) {
 		if (!params.empty() && fptr.find(toUpper(params[0])) != fptr.end())
 			(this->*fptr[toUpper(params[0])])(fd, params);
 	}
+}
+
+void Server::sendHangmanArt(int fd, const std::string& channel) {
+    std::string art = _hangmanGames[fd].getHangmanArt();
+    std::vector<std::string> lines = vecSplit(art, "\n");
+    
+    // Her satırı ayrı bir mesaj olarak gönder
+    for (std::vector<std::string>::iterator it = lines.begin(); it != lines.end(); ++it) {
+        if (!it->empty()) {  // Boş satırları atla
+            msgAllUsers(channel, ":" + _serverName + " PRIVMSG " + channel + " :" + *it + "\r\n");
+        }
+    }
+}
+
+void Server::HANGMAN(int fd, std::vector<std::string> params) {
+    std::cout << "\033[32m[HANGMAN Command]\033[0m" << std::endl;
+    (void)params;
+
+    std::vector<std::string> userChannels = _users[fd].getJoinedChannels();
+    if (userChannels.empty()) {
+        sendData(fd, ":" + _serverName + " PRIVMSG " + _users[fd].getNick() + " :Bu komutu kullanmak için bir kanalda olmalısınız!\r\n");
+        return;
+    }
+    
+    std::string currentChannel = userChannels[0];
+
+    if (_hangmanGames.find(fd) != _hangmanGames.end() && _hangmanGames[fd].isGameActive()) {
+        msgAllUsers(currentChannel, ":" + _serverName + " PRIVMSG " + currentChannel + " :Zaten aktif bir oyun var!\r\n");
+        return;
+    }
+    
+    _hangmanGames[fd].startNewGame();
+    
+    std::stringstream ss;
+    ss << _hangmanGames[fd].getRemainingAttempts();
+    
+    msgAllUsers(currentChannel, ":" + _serverName + " PRIVMSG " + currentChannel + " :Adam Asmaca oyunu başladı!\r\n");
+    sendHangmanArt(fd, currentChannel);  // Yeni fonksiyonu kullan
+    msgAllUsers(currentChannel, ":" + _serverName + " PRIVMSG " + currentChannel + " :Kelime: " + _hangmanGames[fd].getCurrentState() + "\r\n");
+    msgAllUsers(currentChannel, ":" + _serverName + " PRIVMSG " + currentChannel + " :Kalan hak: " + ss.str() + "\r\n");
+    msgAllUsers(currentChannel, ":" + _serverName + " PRIVMSG " + currentChannel + " :Tahmin için /GUESS <harf> komutunu kullanın.\r\n");
+}
+
+void Server::GUESS(int fd, std::vector<std::string> params) {
+    std::cout << "\033[32m[GUESS Command]\033[0m" << std::endl;
+    
+    std::vector<std::string> userChannels = _users[fd].getJoinedChannels();
+    if (userChannels.empty()) {
+        sendData(fd, ":" + _serverName + " PRIVMSG " + _users[fd].getNick() + " :Bu komutu kullanmak için bir kanalda olmalısınız!\r\n");
+        return;
+    }
+
+    std::string currentChannel = userChannels[0];
+
+    if (params.size() < 2) {
+        msgAllUsers(currentChannel, ":" + _serverName + " PRIVMSG " + currentChannel + " :Kullanım: /GUESS <harf>\r\n");
+        return;
+    }
+    
+    if (_hangmanGames.find(fd) == _hangmanGames.end()) {
+        msgAllUsers(currentChannel, ":" + _serverName + " PRIVMSG " + currentChannel + " :Aktif bir oyun yok! /HANGMAN ile yeni oyun başlatın.\r\n");
+        return;
+    }
+
+    if (!_hangmanGames[fd].isGameActive()) {
+        msgAllUsers(currentChannel, ":" + _serverName + " PRIVMSG " + currentChannel + " :Oyun bitti! Yeni bir oyun başlatmak için /HANGMAN yazın.\r\n");
+        return;
+    }
+    
+    std::string tahmin(1, params[1][0]);
+    std::string result = _hangmanGames[fd].makeGuess(params[1][0]);
+    
+    msgAllUsers(currentChannel, ":" + _serverName + " PRIVMSG " + currentChannel + " :" + _users[fd].getNick() + " '" + tahmin + "' harfini tahmin etti.\r\n");
+    sendHangmanArt(fd, currentChannel);  // Yeni fonksiyonu kullan
+    msgAllUsers(currentChannel, ":" + _serverName + " PRIVMSG " + currentChannel + " :Kelime: " + _hangmanGames[fd].getCurrentState() + "\r\n");
+    msgAllUsers(currentChannel, ":" + _serverName + " PRIVMSG " + currentChannel + " :" + _hangmanGames[fd].getGuessedLetters() + "\r\n");
+    
+    if (_hangmanGames[fd].isGameActive()) {
+        std::stringstream ss;
+        ss << _hangmanGames[fd].getRemainingAttempts();
+        msgAllUsers(currentChannel, ":" + _serverName + " PRIVMSG " + currentChannel + " :Kalan hak: " + ss.str() + "\r\n");
+    } else {
+        if (result.find("Tebrikler") != std::string::npos) {
+            msgAllUsers(currentChannel, ":" + _serverName + " PRIVMSG " + currentChannel + " :" + _users[fd].getNick() + " kelimeyi doğru tahmin etti! Tebrikler!\r\n");
+        } else {
+            msgAllUsers(currentChannel, ":" + _serverName + " PRIVMSG " + currentChannel + " :" + _users[fd].getNick() + " oyunu kaybetti! Kelime: " + _hangmanGames[fd].getCurrentState() + "\r\n");
+        }
+    }
 }
